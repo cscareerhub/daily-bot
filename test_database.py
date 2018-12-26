@@ -7,6 +7,7 @@ class DatabaseTest(unittest.TestCase):
 
         self.Database = Database("testing_db")
         self.db = self.Database.db
+        self.Database.start_connection()
 
     def test_valid_table(self):
         tables = self.db.get_tables()
