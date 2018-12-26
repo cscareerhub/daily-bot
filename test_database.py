@@ -1,18 +1,12 @@
 import unittest
-import peewee
-import main
+from database import Database
 
 
 class DatabaseTest(unittest.TestCase):
     def setUp(self):
-        self.db = peewee.PostgresqlDatabase(
-            'testing_db',
-            user='test',
-            password='test',
-            host='localhost'
-        )
 
-        main.init_db(database=self.db)
+        self.Database = Database("testing_db")
+        self.db = self.Database.db
 
     def test_valid_table(self):
         tables = self.db.get_tables()
@@ -25,7 +19,7 @@ class DatabaseTest(unittest.TestCase):
         self.assertTrue(len(cols_qs) == 3)
 
     def tearDown(self):
-        self.db.drop_tables([main.Answer, main.Question], safe=True)
+        self.db.drop_tables([self.Database.Answer, self.Database.Question], safe=True)
         self.db.close()
 
 
