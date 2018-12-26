@@ -10,7 +10,6 @@ class DatabaseTest(unittest.TestCase):
 
     def test_valid_table(self):
         tables = self.db.get_tables()
-        self.assertTrue(len(tables) == 2)
         self.assertEquals(sorted(tables), ['Answer', 'Question'])
         cols_ans = self.db.get_columns('Answer')
         cols_qs = self.db.get_columns('Question')
