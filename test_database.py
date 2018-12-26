@@ -12,7 +12,7 @@ class DatabaseTest(unittest.TestCase):
             host='localhost'
         )
 
-        main.init_db(self.db)
+        main.init_db(database=self.db)
 
     def test_valid_table(self):
         tables = self.db.get_tables()
@@ -27,6 +27,7 @@ class DatabaseTest(unittest.TestCase):
     def tearDown(self):
         self.db.drop_tables([main.Answer, main.Question], safe=True)
         self.db.close()
+
 
 if __name__ == '__main__':
     unittest.main()
