@@ -11,9 +11,9 @@ class DatabaseTest(unittest.TestCase):
 
     def test_valid_table(self):
         tables = self.db.get_tables()
-        self.assertEquals(sorted(tables), ['Answer', 'Question'])
-        cols_ans = self.db.get_columns('Answer')
-        cols_qs = self.db.get_columns('Question')
+        self.assertEquals(sorted(tables), ['answer', 'question'])
+        cols_ans = self.db.get_columns('answer')
+        cols_qs = self.db.get_columns('question')
 
         self.assertTrue(len(cols_ans) == 4)
         self.assertTrue(len(cols_qs) == 3)
