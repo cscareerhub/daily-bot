@@ -1,8 +1,8 @@
 # All Tasks
 - SQL backing database:
     - structure: 
-        - [ ] *Question*: Index (INT NOT NULL PK), Text Block (TEXT NOT NULL), Last Date Asked (DATE)
-        - [ ] *Answers*: Index (INT NOT NULL PK), User ID (???), URL to solution (VARCHAR(2083) NOT NULL), Question Index (INT NOT NULL FK to Question)
+        - *Question*: Index (INT NOT NULL PK), Text Block (TEXT NOT NULL), Last Date Asked (DATE)
+        - *Answers*: Index (INT NOT NULL PK), User ID (???), URL to solution (VARCHAR(2083) NOT NULL), Question Index (INT NOT NULL FK to Question)
 
 - Commands:
     - [x] *Add Question*: Add question to database
