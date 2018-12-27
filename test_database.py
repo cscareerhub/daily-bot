@@ -31,7 +31,8 @@ class DatabaseTest(unittest.TestCase):
     def test_question_retrieval(self):
         if self.Database.Question.select().count() < 1:
             self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
-            
+            self.assertEqual(self.Database.Question.select().count(), 1)
+
         q1 = self.Database.get_day_question()
         q2 = self.Database.get_day_question()
 
