@@ -84,7 +84,7 @@ class Database:
         q = self.Question.get_or_none(self.Question.last_date == datetime.datetime.now().date())
 
         if q is None:
-            q = self.Question.get_or_none(self.Question.last_date is None)
+            q = self.Question.get_or_none(self.Question.last_date.is_null())
 
         # TODO: also do another is none check and add the furthest date from today. This should cover all bases
         q.last_date = datetime.datetime.now().date()
