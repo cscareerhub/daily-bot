@@ -49,9 +49,8 @@ class Database:
 
         :return: amount of rows altered.
         """
-        q = self.Question(body=text)
-
         try:
+            q = self.Question(body=text)
             return q.save()
         except peewee.IntegrityError:
             return 0

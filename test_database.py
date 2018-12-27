@@ -23,8 +23,11 @@ class DatabaseTest(unittest.TestCase):
         self.assertEqual(self.Database.Question.select().count(), 1)
         self.Database.add_new_question("What is the meaning of life?")
         self.assertEqual(self.Database.Question.select().count(), 2)
-        # self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
-        # self.assertEqual(self.Database.Question.select().count(), 2)
+        self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
+        self.assertEqual(self.Database.Question.select().count(), 2)
+        # Testing this post integrity error
+        # self.Database.add_new_question("What is love?")
+        # self.assertEqual(self.Database.Question.select().count(), 3)
 
     def tearDown(self):
         self.db.drop_tables([self.Database.Answer, self.Database.Question], safe=True)
