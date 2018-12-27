@@ -17,7 +17,7 @@ class Database:
 
         class Question(BaseModel):
             body = peewee.TextField(unique=True)
-            last_date = peewee.DateField(NULL=True)
+            last_date = peewee.DateField(null=True)
 
         class Answer(BaseModel):
             uname = peewee.TextField()  # TODO: probably not the best format to save id
