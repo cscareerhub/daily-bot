@@ -29,15 +29,16 @@ class DatabaseTest(unittest.TestCase):
         self.assertEqual(self.Database.Question.select().count(), 3)
 
     def test_question_retrieval(self):
-        self.assertEqual(self.Database.Question.select().count(), 3)
+        if self.Database.Question.select().count() < 1:
+            self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
+            
         q1 = self.Database.get_day_question()
         q2 = self.Database.get_day_question()
 
         self.assertIsNotNone(q1)
         self.assertIsNotNone(q2)
-        
-        self.assertEqual(q1, q2)
 
+        self.assertEqual(q1, q2)
 
     def tearDown(self):
         self.db.drop_tables([self.Database.Answer, self.Database.Question], safe=True)
