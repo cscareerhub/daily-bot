@@ -20,7 +20,7 @@ class DatabaseTest(unittest.TestCase):
 
     def test_adding_questions(self):
         self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
-        # self.assertEqual(self.Database.Question.select().count(), 1)
+        self.assertEqual(self.Database.Question.select().count(), 1)
         # self.Database.add_new_question("What is the meaning of life?")
         # self.assertEqual(self.Database.Question.select().count(), 2)
         # self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
