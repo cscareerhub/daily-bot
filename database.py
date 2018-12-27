@@ -53,6 +53,7 @@ class Database:
             q = self.Question(body=text)
             return q.save()
         except peewee.IntegrityError:
+            self.db.rollback()
             return 0
 
     # TODO: cache the people for the day. At the moment this will be messier by constantly checking the DB
