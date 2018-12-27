@@ -1,4 +1,5 @@
 import peewee
+import datetime
 
 
 class Database:
@@ -58,15 +59,34 @@ class Database:
 
     # TODO: cache the people for the day. At the moment this will be messier by constantly checking the DB
     # TODO: untested
-    def add_new_answer(self, ans_url, qIndex, uname):
+    def add_new_answer(self, ans_url, q_index, uname):
         """
         Add a new answer to a question.
 
         :param ans_url: URL that references the answer
-        :param qIndex: ID (or index) of the question being answered
+        :param q_index: ID (or index) of the question being answered
         :param uname: The author ID of the person answering
 
         :return: amount of rows altered
         """
-        ans = self.Answer.get_or_create(question=qIndex, uname=uname, defaults={'url': ans_url})
+        ans = self.Answer.get_or_create(question=q_index, uname=uname, defaults={'url': ans_url})
         return ans.save()
+
+    def get_day_question(self):
+        """
+        Get the question for the day.
+
+        Retrieves the question that should be asked on the day.
+        Goes in order of: question that has today's date, has no date attached, date furthest from today.
+
+        :return: Question for the day (none if nothing found)
+        """
+        q = self.Question.get_or_none(self.Question.last_date == datetime.datetime.now().date())
+
+        if q is None:
+            q = self.Question.get_or_none(self.Question.last_date is None)
+
+        # TODO: also do another is none check and add the furthest date from today. This should cover all bases
+        q.last_date = datetime.datetime.now().date()
+        q.save()
+        return q.index, q.body

@@ -1,18 +1,23 @@
 import os
+import discord
 
 from discord import Game
+from threading import Timer
+from database import Database
+from datetime import datetime
 from dotenv import load_dotenv
 from os.path import join, dirname
-from database import Database
 from discord.ext.commands import Bot
 
 # This is from rolley
-cmd_prefix = '>'
+PREFIX = '>'
+DQ_CHANNEL = 'daily-coding-challenge'
+
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 TOKEN = os.environ.get('TOKEN')
-bot = Bot(cmd_prefix)
+bot = Bot(PREFIX)
 
 # SQL Database Info
 UNAME = os.environ.get('USERNAME')
@@ -20,10 +25,30 @@ PWD = os.environ.get('PASSWORD')
 
 db = Database("daily_bot")
 
+# Date difference (all from SO)
+x = datetime.today()
+y = x.replace(day=x.day + 1, hour=1, minute=0, second=0, microsecond=0)
+delta_t = y - x
+secs = delta_t.seconds + 1
+
+# Cache stuff
 user_cache = {}
+question = None
+question_date = None
 
 
-# Bot events
+def update_question():
+    global question, question_date
+
+    if question is None or question_date < datetime.today().date():
+        question = db.get_day_question()
+        question_date = datetime.today().date()
+
+
+timer = Timer(secs, update_question)
+
+
+# Bot Events
 @bot.event
 async def on_ready():
     await bot.change_presence(game=Game(name="Hackerrank"))
@@ -58,5 +83,21 @@ async def on_message(message):
         user_cache[message.author.id] = body
 
 
+# Bot Commands
+@bot.command(name='show_question', description='shows the question for the day', aliases=['show_q', 'q'],
+             brief='show today\'s question', pass_context=True)
+async def show_question(ctx):
+    if ctx.message.channel.name != DQ_CHANNEL:
+        return
+
+    if question is None:
+        update_question()
+
+    emb = discord.Embed(title='Question for {}'.format(datetime.today().date()), type='rich',
+                        description=question, color=0xffd700)
+    await bot.send_message(ctx.message.channel, embed=emb)
+
+
 if __name__ == '__main__':
+    timer.start()
     bot.run(TOKEN)

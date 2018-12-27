@@ -20,4 +20,6 @@ Reply **YES** to save the question to the database, **NO** (or anything else) to
 <br>
 *NOTE:* Body is unique so if you try add a question that is already in the database, you will be notified that it failed.
 
-### Adding an Answer
+### Showing a Question
+In the given channel (`daily-coding-challenge` by default), enter `>q` or `>show_question` to get the corresponding question.
+This will automatically update on a daily basis.
