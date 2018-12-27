@@ -50,7 +50,11 @@ class Database:
         :return: amount of rows altered.
         """
         q = self.Question(body=text)
-        return q.save()
+
+        try:
+            return q.save()
+        except peewee.IntegrityError:
+            return 0
 
     # TODO: cache the people for the day. At the moment this will be messier by constantly checking the DB
     # TODO: untested
