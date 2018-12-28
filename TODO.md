@@ -7,7 +7,7 @@
 - Commands:
     - [x] *Add Question*: Add question to database
     - [ ] *Remove Question*: Remove from database
-    - [ ] *Force Question*: force bot to push question to channel
+    - [x] *Force Question*: force bot to push question to channel
     - [ ] *Add Solution*: add or change solution for user
     - [ ] *List Solutions*: list solutions for users given a question index
     - [ ] *List Questions*: list questions by index and date
@@ -15,9 +15,9 @@
     - [ ] *Alter Users*: add users that can communicate with bot
 
 - Other:
-    - [ ] Timer to know when to run question
+    - [x] Timer to know when to run question
     - [ ] Bot backend
-        - [ ] Target channel
+        - [x] Target channel
         - [ ] Communication with right people only
     - [ ] General SQL integration
     - [ ] Add SQL cache
