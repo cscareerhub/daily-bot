@@ -13,6 +13,7 @@ python:
 
 services:
   - postgresql
+  - docker
 
 install:
   - pip install -r requirements.txt
@@ -22,3 +23,7 @@ before_script:
   - psql -c "CREATE USER test WITH PASSWORD 'test';" -U postgres
 
 script: python test_database.py
+
+after_success:
+  # - docker login -u "test" -p "test"
+  - echo "I need to finish this"

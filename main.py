@@ -10,14 +10,14 @@ from os.path import join, dirname
 from discord.ext.commands import Bot
 
 # This is from rolley
-PREFIX = '>'
+PREFIX = '!'
 DQ_CHANNEL = 'daily-coding-challenge'
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 TOKEN = os.environ.get('TOKEN')
-bot = Bot(PREFIX)
+bot = Bot(command_prefix=PREFIX)
 
 # SQL Database Info
 UNAME = os.environ.get('USERNAME')
@@ -39,7 +39,7 @@ question_date = None
 
 def update_question():
     global question, question_date
-
+    print("Updating Question")
     if question is None or question_date < datetime.today().date():
         question = db.get_day_question()
         question_date = datetime.today().date()
@@ -61,6 +61,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if not message.channel.is_private:
+        await bot.process_commands(message)
         return
 
     # TODO: add check in DB to see if person is allowed to add
@@ -81,19 +82,22 @@ async def on_message(message):
         await bot.send_message(message.author,
                                "```{}```\nType in _YES_ to keep it this way. _NO_ to try format again".format(body))
         user_cache[message.author.id] = body
+    else:
+        await bot.process_commands(message)
 
 
 # Bot Commands
 @bot.command(name='show_question', description='shows the question for the day', aliases=['show_q', 'q'],
              brief='show today\'s question', pass_context=True)
 async def show_question(ctx):
+    global question
     if ctx.message.channel.name != DQ_CHANNEL:
         return
 
     if question is None:
         update_question()
 
-    emb = discord.Embed(title='Question for {}'.format(datetime.today().date()), type='rich',
+    emb = discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
                         description=question, color=0xffd700)
     await bot.send_message(ctx.message.channel, embed=emb)
 
