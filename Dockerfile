@@ -9,8 +9,10 @@ WORKDIR /daily-bot
 # get it running
 RUN pip3 install -r requirements.txt
 RUN alias python=python3
-RUN service postgresql start
-RUN psql -c "CREATE DATABASE dailybot;" -U postgres
-RUN psql -c "CREATE USER user WITH PASSWORD 'password';" -U postgres
+
+USER postgres
+RUN    /etc/init.d/postgresql start &&\
+    psql --command "CREATE USER user WITH SUPERUSER PASSWORD 'password';" &&\
+    createdb -O user dailybot
 
 CMD echo "Ready!"
