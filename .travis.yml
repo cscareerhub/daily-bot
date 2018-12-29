@@ -24,8 +24,9 @@ before_script:
   - psql -c "CREATE USER test WITH PASSWORD 'test';" -U postgres
 script: python test_database.py
 after_success:
-  - echo "$REGISTRY_USERNAME"
-  - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISRTY_USERNAME" --password-stdin
+  - echo "$REGISTRY_USER"
+  - echo "$REGISTRY_PASSWORD"
+  - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISRTY_USER" --password-stdin
   - docker build -t $IMAGE_NAME .
   - docker push $IMAGE_NAME
   - docker images
