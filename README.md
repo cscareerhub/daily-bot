@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/nikmanG/daily-bot-test.svg?branch=master)](https://travis-ci.org/nikmanG/daily-bot-test)
-
+[![Discord Chat](https://img.shields.io/discord/334891772696330241.svg)](https://discord.gg/ndFR4RF)
+[![License](https://img.shields.io/github/license/CS-Career-Hackers/daily-bot.svg)](LICENSE)
 # Daily-Bot
 A bot that outputs coding questions on a daily basis.
 
