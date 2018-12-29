@@ -6,7 +6,8 @@ A bot that outputs coding questions on a daily basis.
 
 ## Setup
 ### Docker
-Still doing this
+- Base image is `nikmang/daily-bot`. Download this and run it with the following command: `docker run -it nikmang/daily-bot bash`
+- This will land you in the main directory with the python script. After this follow the directions on [here](README.md#installation)
 
 ### Normal Script
 ####Prerequisites:
@@ -17,6 +18,7 @@ Still doing this
 ####Installation
 Note: this should be pretty generic among all Linux, MacOS, and Windows systems.
 
+- Run `service postgresql start` to enable the Postgres server. _**Note:** this step may get removed in the future for dockerfile._
 - Move into the directory with `main.py`
 - Run `pip3 install -r requirements.txt` (or `pip install -r requirements.txt` depending on Python versions)
 - Create a `.env` file in the current directory. It should contain the following variables:
@@ -25,6 +27,8 @@ TOKEN=<Discord Developer Token>
 USERNAME=<PostgreSQL account username for bot>
 PASSWORD=<PostgreSQL account password for bot>
 ```
+_Note here that you will need to create an account for the postgres user manually, as well as the **dailybot** database._
+
 - Run `python3 main.py` (or again depending on install `python main.py` could suffice).<br>
 If successful, this should be present on the terminal:
 ```

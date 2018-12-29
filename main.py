@@ -23,13 +23,10 @@ bot = Bot(command_prefix=PREFIX)
 UNAME = os.environ.get('USERNAME')
 PWD = os.environ.get('PASSWORD')
 
-db = Database("daily_bot")
+db = Database("dailybot", uname=UNAME, pwd=PWD)
 
-# Date difference (all from SO)
-x = datetime.today()
-y = x.replace(day=x.day + 1, hour=1, minute=0, second=0, microsecond=0)
-delta_t = y - x
-secs = delta_t.seconds + 1
+# Date difference
+secs = 24*60*60
 
 # Cache stuff
 user_cache = {}
