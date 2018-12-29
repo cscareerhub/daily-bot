@@ -38,7 +38,7 @@ def update_question():
     global question, question_date
     print("Updating Question")
     if question is None or question_date < datetime.today().date():
-        question = db.get_day_question()
+        question = db.get_day_question()[1]
         question_date = datetime.today().date()
 
 
@@ -48,11 +48,14 @@ timer = Timer(secs, update_question)
 # Bot Events
 @bot.event
 async def on_ready():
+    global db
     await bot.change_presence(game=Game(name="Hackerrank"))
     print("Logged in as")
     print(bot.user.name)
     print(bot.user.id)
     print("------")
+    db.start_connection()
+    update_question()
 
 
 @bot.event
@@ -91,8 +94,10 @@ async def show_question(ctx):
     if ctx.message.channel.name != DQ_CHANNEL:
         return
 
+    update_question()
+
     if question is None:
-        update_question()
+        question = 'No available questions found... Contact one of channel mods!'
 
     emb = discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
                         description=question, color=0xffd700)

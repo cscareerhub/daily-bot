@@ -21,6 +21,11 @@
         - [ ] Communication with right people only
     - [ ] General SQL integration
     - [ ] Add SQL cache
+    - [ ] Alter Dockerfile
+        - [ ] include vim in base package
+        - [ ] start psql automatically
+        - [ ] add psql defaults in base package
+        - [ ] go straight to `vim .env`
     
 # Potential Order
 1. Database Communication
