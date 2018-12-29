@@ -12,7 +12,7 @@ RUN alias python=python3
 
 USER postgres
 RUN    /etc/init.d/postgresql start &&\
-    psql --command "CREATE USER user WITH SUPERUSER PASSWORD 'password';" &&\
-    createdb -O user dailybot
+    psql --command "CREATE USER vagrant WITH SUPERUSER PASSWORD 'password';" &&\
+    createdb -O vagrant dailybot
 
 CMD echo "Ready!"
