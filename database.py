@@ -99,16 +99,21 @@ class Database:
                 break
 
             if row["id"] >= first_index:
-                string += "{:>3} | {}\n".format(row["id"], row["body"])
+                body = row["body"]
+
+                if body.startswith('\n'):
+                    body = body[2:]
+
+                string += "{:>3} | {}\n".format(row["id"], body)
 
         return string
 
     def remove_question(self, index):
-        # TODO: test AFTER for it being today's question
         target = self.Question.get_or_none(self.Question.id == index)
 
         if target is None:
-            return False
+            return None
 
+        string = target.body
         target.delete_instance()
-        return True
+        return string

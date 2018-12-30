@@ -60,7 +60,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    if not message.channel.is_private:
+    if not message.channel.is_private or message.author.bot:
         await bot.process_commands(message)
         return
 
@@ -124,7 +124,7 @@ async def list_questions(ctx, *args):
 @bot.command(name='remove_question', description='deletes question based on index, found by using >list', aliases=['del', 'remove'],
              brief='delete question on index', pass_context=True)
 async def remove_question(ctx, *args):
-    global db
+    global db, question
     if len(args) == 0:
         await bot.send_message(ctx.message.channel, content="Please supply index to delete")
         return
@@ -132,7 +132,9 @@ async def remove_question(ctx, *args):
     try:
         succ = db.remove_question(int(args[0]))
 
-        if succ:
+        if succ is not None:
+            if question == succ:
+                question = None
             await bot.send_message(ctx.message.channel, content="Successfully deleted")
         else:
             await bot.send_message(ctx.message.channel, content="could not find question with supplied index")

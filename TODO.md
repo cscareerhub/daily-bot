@@ -6,7 +6,7 @@
 
 - Commands:
     - [x] *Add Question*: Add question to database
-    - [ ] *Remove Question*: Remove from database
+    - [x] *Remove Question*: Remove from database
     - [x] *Force Question*: force bot to push question to channel
     - [ ] *Add Solution*: add or change solution for user
     - [ ] *List Solutions*: list solutions for users given a question index
@@ -19,10 +19,10 @@
     - [ ] Bot backend
         - [x] Target channel
         - [ ] Communication with right people only
-    - [ ] General SQL integration
+    - [x] General SQL integration
     - [ ] Add SQL cache
     - [ ] Alter Dockerfile
-        - [ ] include vim in base package
+        - [x] include vim in base package (TODO: switch this to the psql base)
         - [x] start psql automatically
         - [x] add psql defaults in base package
         - [x] go straight to `vim .env`
