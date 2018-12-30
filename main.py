@@ -10,7 +10,7 @@ from os.path import join, dirname
 from discord.ext.commands import Bot
 
 # This is from rolley
-PREFIX = '!'
+PREFIX = '>'
 DQ_CHANNEL = 'daily-coding-challenge'
 
 dotenv_path = join(dirname(__file__), '.env')

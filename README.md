@@ -55,3 +55,12 @@ Reply **YES** to save the question to the database, **NO** (or anything else) to
 ### Showing a Question
 In the given channel (`daily-coding-challenge` by default), enter `>q` or `>show_question` to get the corresponding question.
 This will automatically update on a daily basis.
+
+### Listing Questions
+```>lq``` will list the first _10_ questions that were input into the database.
+By providing an integer after command, e.g ```>lq 10``` you will get 10 questions starting from provided index.<br>
+_NOTE:_ indexing starts at 1, not 0.
+
+### Removing a Question
+```>del <index>``` e.g ```>del 10``` deletes a question with given index. Index found by [listing questions](README.md#Listing Questions).
+If the question is the day's question, a new one will be found.

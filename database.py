@@ -92,6 +92,16 @@ class Database:
         return q.index, q.body
 
     def list_questions(self, first_index=0):
+        """
+        Lists questions.
+
+        Lists 10 questions sorted by insertion order into database.
+        By providing an integer, you retrieve 10 values starting from that index.
+        Note: index starts at 1.
+
+        :param first_index: The first index to start at
+        :return: a string that represents set block of questions
+        """
         count = 0
         string = "{:>3} | {}\n".format("ID", "Text")
         for row in self.Question.select().dicts():
@@ -109,6 +119,14 @@ class Database:
         return string
 
     def remove_question(self, index):
+        """
+        Remove a question by providing its index.
+
+        Removes a question by providing its index (found by listing questions).
+
+        :param index: Index of question to remove
+        :return: None if question was not found, otherwise string body of set question
+        """
         target = self.Question.get_or_none(self.Question.id == index)
 
         if target is None:
