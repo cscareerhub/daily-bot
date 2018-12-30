@@ -90,3 +90,25 @@ class Database:
         q.last_date = datetime.datetime.now().date()
         q.save()
         return q.index, q.body
+
+    def list_questions(self, first_index=0):
+        count = 0
+        string = "{:>3} | {}\n".format("ID", "Text")
+        for row in self.Question.select().dicts():
+            if count >= 10:
+                break
+
+            if row["id"] >= first_index:
+                string += "{:>3} | {}\n".format(row["id"], row["body"])
+
+        return string
+
+    def remove_question(self, index):
+        # TODO: test AFTER for it being today's question
+        target = self.Question.get_or_none(index)
+
+        if target is None:
+            return False
+
+        target.delete_instance()
+        return True

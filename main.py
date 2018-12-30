@@ -26,7 +26,7 @@ PWD = os.environ.get('PASSWORD')
 db = Database("dailybot", uname=UNAME, pwd=PWD)
 
 # Date difference
-secs = 24*60*60
+secs = 24 * 60 * 60
 
 # Cache stuff
 user_cache = {}
@@ -103,6 +103,41 @@ async def show_question(ctx):
                         description=question, color=0xffd700)
     await bot.send_message(ctx.message.channel, embed=emb)
 
+
+@bot.command(name='list_questions', description='lists all questions from index provided', aliases=['list', 'lq'],
+             brief='list all questions', pass_context=True)
+async def list_questions(ctx, *args):
+    global db
+    if len(args) == 0:
+        string = db.list_questions()
+    else:
+        try:
+            string = db.list_questions(first_index=int(args[0]))
+        except ValueError:
+            string = db.list_questions()
+
+    string = '```' + string + '```'
+
+    await bot.send_message(ctx.message.channel, content=string)
+
+
+@bot.command(name='remove_question', description='deletes question based on index, found by using >list', aliases=['del', 'remove'],
+             brief='delete question on index', pass_context=True)
+async def remove_question(ctx, *args):
+    global db
+    if len(args) == 0:
+        await bot.send_message(ctx.message.channel, content="Please supply index to delete")
+        return
+
+    try:
+        succ = db.remove_question(int(args[0]))
+
+        if succ:
+            await bot.send_message(ctx.message.channel, content="Successfully deleted")
+        else:
+            await bot.send_message(ctx.message.channel, content="could not find question with supplied index")
+    except ValueError:
+        await bot.send_message(ctx.message.channel, content="Please supply **A NUMBER**")
 
 if __name__ == '__main__':
     timer.start()

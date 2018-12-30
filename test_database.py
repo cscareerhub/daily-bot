@@ -41,6 +41,16 @@ class DatabaseTest(unittest.TestCase):
 
         self.assertEqual(q1, q2)
 
+    def test_question_deleting(self):
+        self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
+        self.Database.add_new_question("What is the meaning of life?")
+        self.Database.add_new_question("What is love?")
+
+        self.Database.remove_question(1)
+        self.assertTrue(self.Database.Question.select().count(), 2)
+        self.Database.remove_question(4)
+        self.assertTrue(self.Database.Question.select().count(), 2)
+        
     def tearDown(self):
         self.db.drop_tables([self.Database.Answer, self.Database.Question], safe=True)
         self.db.close()
