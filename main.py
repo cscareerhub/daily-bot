@@ -32,6 +32,7 @@ secs = 24 * 60 * 60
 user_cache = {}
 question = None
 question_date = None
+target_channel = None
 
 
 def update_question():
@@ -42,7 +43,14 @@ def update_question():
         question_date = datetime.today().date()
 
 
-timer = Timer(secs, update_question)
+async def timer_update():
+    update_question()
+    Timer(secs, timer_update).start()
+
+    if target_channel is not None:
+        emb = discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
+                            description=question, color=0xffd700)
+        await bot.send_message(target_channel, embed=emb)
 
 
 # Bot Events
@@ -60,7 +68,13 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    global target_channel
+
     if not message.channel.is_private or message.author.bot:
+        # This is a passive check to update the target channel for showing question
+        if target_channel is None and message.channel.name == DQ_CHANNEL:
+            target_channel = message.channel
+
         await bot.process_commands(message)
         return
 
@@ -121,7 +135,8 @@ async def list_questions(ctx, *args):
     await bot.send_message(ctx.message.channel, content=string)
 
 
-@bot.command(name='remove_question', description='deletes question based on index, found by using >list', aliases=['del', 'remove'],
+@bot.command(name='remove_question', description='deletes question based on index, found by using >list',
+             aliases=['del', 'remove'],
              brief='delete question on index', pass_context=True)
 async def remove_question(ctx, *args):
     global db, question
@@ -141,6 +156,7 @@ async def remove_question(ctx, *args):
     except ValueError:
         await bot.send_message(ctx.message.channel, content="Please supply **A NUMBER**")
 
+
 if __name__ == '__main__':
-    timer.start()
+    Timer(secs, timer_update).start()
     bot.run(TOKEN)
