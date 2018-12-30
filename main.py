@@ -1,8 +1,8 @@
 import os
 import discord
+import asyncio
 
 from discord import Game
-from threading import Timer
 from database import Database
 from datetime import datetime
 from dotenv import load_dotenv
@@ -43,11 +43,11 @@ def update_question():
         question_date = datetime.today().date()
 
 
-def timer_update():
-    update_question()
-    Timer(secs, timer_update).start()
-
-    run_embed()
+async def timer_update():
+    while True:
+        update_question()
+        await run_embed()
+        await asyncio.sleep(secs)
 
 
 # Bot Events
@@ -162,5 +162,8 @@ async def run_embed():
 
 
 if __name__ == '__main__':
-    Timer(secs, timer_update).start()
+    loop = asyncio.get_event_loop()
+    task = loop.create_task(timer_update())
+    loop.run_until_complete(task)
+    
     bot.run(TOKEN)
