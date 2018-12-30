@@ -102,7 +102,7 @@ class Database:
                 body = row["body"]
 
                 if body.startswith('\n'):
-                    body = body[2:]
+                    body = body[1:]
 
                 string += "{:>3} | {}\n".format(row["id"], body)
 
