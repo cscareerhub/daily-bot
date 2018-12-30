@@ -43,14 +43,11 @@ def update_question():
         question_date = datetime.today().date()
 
 
-async def timer_update():
+def timer_update():
     update_question()
     Timer(secs, timer_update).start()
 
-    if target_channel is not None:
-        emb = discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
-                            description=question, color=0xffd700)
-        await bot.send_message(target_channel, embed=emb)
+    run_embed()
 
 
 # Bot Events
@@ -155,6 +152,13 @@ async def remove_question(ctx, *args):
             await bot.send_message(ctx.message.channel, content="could not find question with supplied index")
     except ValueError:
         await bot.send_message(ctx.message.channel, content="Please supply **A NUMBER**")
+
+
+async def run_embed():
+    if target_channel is not None:
+        emb = discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
+                            description=question, color=0xffd700)
+        await bot.send_message(target_channel, embed=emb)
 
 
 if __name__ == '__main__':
