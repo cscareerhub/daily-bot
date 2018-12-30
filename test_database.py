@@ -50,7 +50,7 @@ class DatabaseTest(unittest.TestCase):
         self.assertTrue(self.Database.Question.select().count(), 2)
         self.Database.remove_question(4)
         self.assertTrue(self.Database.Question.select().count(), 2)
-        
+
     def tearDown(self):
         self.db.drop_tables([self.Database.Answer, self.Database.Question], safe=True)
         self.db.close()

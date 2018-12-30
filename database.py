@@ -105,7 +105,7 @@ class Database:
 
     def remove_question(self, index):
         # TODO: test AFTER for it being today's question
-        target = self.Question.get_or_none(index)
+        target = self.Question.get_or_none(self.Question.id == index)
 
         if target is None:
             return False
