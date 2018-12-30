@@ -60,7 +60,8 @@ async def on_ready():
     print(bot.user.id)
     print("------")
     db.start_connection()
-    update_question()
+    loop = asyncio.get_event_loop()
+    asyncio.ensure_future(timer_update(), loop=loop)
 
 
 @bot.event
@@ -162,8 +163,4 @@ async def run_embed():
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    task = loop.create_task(timer_update())
-    loop.run_until_complete(task)
-    
     bot.run(TOKEN)
