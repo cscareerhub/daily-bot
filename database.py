@@ -3,12 +3,12 @@ import datetime
 
 
 class Database:
-    def __init__(self, db_name, uname="test", pwd="test"):
+    def __init__(self, db_name, uname="test", pwd="test", host="localhost"):
         self.db = peewee.PostgresqlDatabase(
             db_name,
             user=uname,
             password=pwd,
-            host='localhost'
+            host=host
         )
 
         # This is taken mostly from the Peewee sample app
