@@ -8,7 +8,7 @@ class Database:
             db_name,
             user=uname,
             password=pwd,
-            host='localhost'
+            host='db'
         )
 
         # This is taken mostly from the Peewee sample app

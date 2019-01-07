@@ -1,17 +1,21 @@
-version: '3.7'
+version: '3'
 
 services:
   db:
     image: postgres:latest
     restart: always
     ports:
-      - '8080:8080'
+      - '5432:5432'
     environment:
       POSTGRES_PASSWORD: 'postgres'
       POSTGRES_USER: 'postgres'
       POSTGRES_DB: 'dailybot'
     volumes:
-      - ./database_data:/var/lib/postgresql/data
+      - database_data:/var/lib/postgresql/data
+  daily-bot:
+    build: .
+    depends_on:
+      - db
 
 volumes:
   database_data:
