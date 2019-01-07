@@ -1,30 +1,30 @@
 language: python
 sudo: required
 os:
-- linux
+  - linux
 dist: trusty
 env:
   global:
-  - IMAGE_NAME=nikmang/daily-bot
-  - secure: i0dSL+KrksX+K4Lpz/Gd7bP00TGuY5CW4yXNMaJHlEUaV+i2XP2BkDlyUZS6XyJ9xYVgr620dHWBy7X0cJlK6miOLifMqCPa3fqwcqO7aTndZuavfFA/hrmnSF/aejoAGqmEpxeaIqmZhdxAqp3zngeB+Fgeb+WiS+9QaZFA6nI9StfbLifwV3lqdqnl+YKJ+7awQeBii65qr6EEiNaWZqueTA3SjJNeSIhzFAsH1E/8jZB/US1y1EEav1vt9Js3vfJYGhoLfwUkpHmBY3imch0tn38RzrESBBJKyrLiUHHvwaPpkVflgjT52ZsW8ZB2C1/Jg7XYjUsBGUBtIUw66lPgQKty1Icd633dB/4f8yPwfmJNspfjHDMXh2oz+I8hHKMOivdoEqjKIMNlym3UgkSDBK7NEV/4+9rJa35c7fNLuE+VcZOG4VD2w2LMCNNg/kBKTzyU5HvuaKhhNvnldkjv0L9c9Z9bwuYQzdWF/nksuMX7AwOCI+vmwIcijBrYI0CyIG8P/XuzWZgZvrohQh+5EoEk8r4IH/R3mT0mnCqxA4p6rMyBhiGq+T6EMGPF3eYmZjiHUyLnH57V/Iw0/EYbY10GFIHVq/+acxMLXDopLx6kCp3k8YoCBrJO4FR3A4uCcOqOCs7Q3xxfFRKbqOkYSs1gCgcDLBrPczcHVLU=
-  - secure: fOLtfEHdaHMoXSUv0gPXw6PobcSGsSzsPdIiMbrurgNGHU+lsohWdyq7zJxPlcEjN3zUFZVt/R0SXW+JdBtAzTaZ8CGzeUZ2RaUedRRxCkui7/kZxUz3tbX2hcyJ+UVtRfUUeK6t1gz3WTY8T6efvEk4bpZyvBX/pv3KgzBM2JhR35MmrtMyPkuBwFZ99CR2FlIwRxjHFIVo1+KBlqjUtObAUicJ7FsHOUIfnfpd2JI1hFX05wA3jeHnRzQuerezwpfjbBS9N25Fbm3N4GNCOvRYsA/mh+Vu3xPfn0iySYEpWEjKdEZfQV9Wzj98shMGQVYgb0vp2iNDU0DBMCrK2ELsMYvPSBcnjOwWxm4oXYktu02yeBCa4sZqJwB5p6/EffYCwU0cV91TSR+DImLs3nLfMkg8SfG6/fH1jXQ+t6Jm5iMlpqXNu+c3RzTEMmRWQY0PYaLw823nAb4XAbpUn2LyGK5ZAIa+uOBRM+rNMWxO+ENKmpSk/OPFfHEPDeB32QbI4T3MYJdRkzx56aGdB0xm82OYShA73uoThMmf31P9OwHu5cT1T9Ui9GfmXa524i+SBs2s++jA2qJ0VCohwp0U0sBqiG6TIGpG13dbKewp5VXMwKf3tOXwFSaZbIN5Vy/e1fQkaVzThcZ8DQgIO9bnzOqAGK4H8pQfGfWJhQk=
+    - IMAGE_NAME=nikmang/daily-bot
+    - secure: i0dSL+KrksX+K4Lpz/Gd7bP00TGuY5CW4yXNMaJHlEUaV+i2XP2BkDlyUZS6XyJ9xYVgr620dHWBy7X0cJlK6miOLifMqCPa3fqwcqO7aTndZuavfFA/hrmnSF/aejoAGqmEpxeaIqmZhdxAqp3zngeB+Fgeb+WiS+9QaZFA6nI9StfbLifwV3lqdqnl+YKJ+7awQeBii65qr6EEiNaWZqueTA3SjJNeSIhzFAsH1E/8jZB/US1y1EEav1vt9Js3vfJYGhoLfwUkpHmBY3imch0tn38RzrESBBJKyrLiUHHvwaPpkVflgjT52ZsW8ZB2C1/Jg7XYjUsBGUBtIUw66lPgQKty1Icd633dB/4f8yPwfmJNspfjHDMXh2oz+I8hHKMOivdoEqjKIMNlym3UgkSDBK7NEV/4+9rJa35c7fNLuE+VcZOG4VD2w2LMCNNg/kBKTzyU5HvuaKhhNvnldkjv0L9c9Z9bwuYQzdWF/nksuMX7AwOCI+vmwIcijBrYI0CyIG8P/XuzWZgZvrohQh+5EoEk8r4IH/R3mT0mnCqxA4p6rMyBhiGq+T6EMGPF3eYmZjiHUyLnH57V/Iw0/EYbY10GFIHVq/+acxMLXDopLx6kCp3k8YoCBrJO4FR3A4uCcOqOCs7Q3xxfFRKbqOkYSs1gCgcDLBrPczcHVLU=
+    - secure: fOLtfEHdaHMoXSUv0gPXw6PobcSGsSzsPdIiMbrurgNGHU+lsohWdyq7zJxPlcEjN3zUFZVt/R0SXW+JdBtAzTaZ8CGzeUZ2RaUedRRxCkui7/kZxUz3tbX2hcyJ+UVtRfUUeK6t1gz3WTY8T6efvEk4bpZyvBX/pv3KgzBM2JhR35MmrtMyPkuBwFZ99CR2FlIwRxjHFIVo1+KBlqjUtObAUicJ7FsHOUIfnfpd2JI1hFX05wA3jeHnRzQuerezwpfjbBS9N25Fbm3N4GNCOvRYsA/mh+Vu3xPfn0iySYEpWEjKdEZfQV9Wzj98shMGQVYgb0vp2iNDU0DBMCrK2ELsMYvPSBcnjOwWxm4oXYktu02yeBCa4sZqJwB5p6/EffYCwU0cV91TSR+DImLs3nLfMkg8SfG6/fH1jXQ+t6Jm5iMlpqXNu+c3RzTEMmRWQY0PYaLw823nAb4XAbpUn2LyGK5ZAIa+uOBRM+rNMWxO+ENKmpSk/OPFfHEPDeB32QbI4T3MYJdRkzx56aGdB0xm82OYShA73uoThMmf31P9OwHu5cT1T9Ui9GfmXa524i+SBs2s++jA2qJ0VCohwp0U0sBqiG6TIGpG13dbKewp5VXMwKf3tOXwFSaZbIN5Vy/e1fQkaVzThcZ8DQgIO9bnzOqAGK4H8pQfGfWJhQk=
 python:
-- '3.5'
-- 3.5-dev
-- '3.6'
-- 3.6-dev
-- 3.7-dev
+  - '3.5'
+  - 3.5-dev
+  - '3.6'
+  - 3.6-dev
+  - 3.7-dev
 services:
-- postgresql
-- docker
+  - postgresql
+  - docker
 install:
-- pip install -r requirements.txt
+  - pip install -r requirements.txt
 before_script:
-- psql -c "CREATE DATABASE testing_db;" -U postgres
-- psql -c "CREATE USER test WITH PASSWORD 'test';" -U postgres
+  - psql -c "CREATE DATABASE testing_db;" -U postgres
+  - psql -c "CREATE USER test WITH PASSWORD 'test';" -U postgres
 script: python test_database.py
-after_success:
-- docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASSWORD"
-- docker build -t $IMAGE_NAME .
-- docker push $IMAGE_NAME
-- docker images
+#after_success:
+#  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASSWORD"
+#  - docker build -t $IMAGE_NAME .
+#  - docker push $IMAGE_NAME
+#  - docker images
