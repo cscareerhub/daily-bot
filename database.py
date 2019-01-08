@@ -94,7 +94,7 @@ class Database:
     def get_index_question(self, index):
         """
 
-        :param idx: Index of question that is to be found (look at list_questions)
+        :param index: Index of question that is to be found (look at list_questions)
         :return: body of question by that index, or None is nothing found
         """
         target = self.Question.get_or_none(self.Question.id == index)
@@ -125,9 +125,11 @@ class Database:
             if row["id"] >= first_index:
                 body = row["last_date"]
 
-                if body.startswith('\n'):
-                    body = body[1:]
-
+                if body is not None:
+                    body = body.strftime('%d/%m/%Y')
+                else:
+                    body = "Never Asked"
+                    
                 string += "{:>3} | {}\n".format(row["id"], body)
 
         return string

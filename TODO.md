@@ -10,7 +10,7 @@
     - [x] *Force Question*: force bot to push question to channel
     - [ ] *Add Solution*: add or change solution for user
     - [ ] *List Solutions*: list solutions for users given a question index
-    - [ ] *List Questions*: list questions by index and date
+    - [x] *List Questions*: list questions by index and date
     - [ ] *Re-open Connection*: Re open connection to database server if closes
     - [ ] *Alter Users*: add users that can communicate with bot
 
