@@ -91,7 +91,7 @@ class Database:
         q.save()
         return q.index, q.body
 
-    def get_index_question(self, idx):
+    def get_index_question(self, index):
         """
 
         :param idx: Index of question that is to be found (look at list_questions)
