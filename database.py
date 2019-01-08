@@ -91,6 +91,20 @@ class Database:
         q.save()
         return q.index, q.body
 
+    def get_index_question(self, idx):
+        """
+
+        :param idx: Index of question that is to be found (look at list_questions)
+        :return: body of question by that index, or None is nothing found
+        """
+        target = self.Question.get_or_none(self.Question.id == index)
+
+        if target is None:
+            return None
+
+        string = target.body
+        return string
+
     def list_questions(self, first_index=0):
         """
         Lists questions.
@@ -103,13 +117,13 @@ class Database:
         :return: a string that represents set block of questions
         """
         count = 0
-        string = "{:>3} | {}\n".format("ID", "Text")
+        string = "{:>3} | {}\n".format("ID", "Last Asked")
         for row in self.Question.select().dicts():
             if count >= 10:
                 break
 
             if row["id"] >= first_index:
-                body = row["body"]
+                body = row["last_date"]
 
                 if body.startswith('\n'):
                     body = body[1:]

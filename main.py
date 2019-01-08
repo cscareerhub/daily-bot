@@ -25,8 +25,8 @@ PWD = os.environ.get('PASSWORD')
 
 db = Database("dailybot", uname=UNAME, pwd=PWD, host="db")
 
-# Date difference
-secs = 24 * 60 * 60
+# Date difference (note: checks every 12hrs)
+secs = 12 * 60 * 60
 
 # Cache stuff
 user_cache = {}
@@ -99,21 +99,35 @@ async def on_message(message):
 
 
 # Bot Commands
-@bot.command(name='show_question', description='shows the question for the day', aliases=['show_q', 'q'],
-             brief='show today\'s question', pass_context=True)
-async def show_question(ctx):
+@bot.command(name='show_question',
+             description='shows the question for the day. If a number is provided after, gets a question with that index',
+             aliases=['show_q', 'q'], brief='show today\'s question', pass_context=True)
+async def show_question(ctx, *args):
     global question
     if ctx.message.channel.name != DQ_CHANNEL:
         return
 
-    update_question()
+    if len(args) == 0:
+        update_question()
 
-    if question is None:
-        question = 'No available questions found... Contact one of channel mods!'
+        if question is None:
+            question = 'No available questions found... Contact one of channel mods!'
 
-    emb = discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
-                        description=question, color=0xffd700)
-    await bot.send_message(ctx.message.channel, embed=emb)
+        emb = discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
+                            description=question, color=0xffd700)
+        await bot.send_message(ctx.message.channel, embed=emb)
+    else:
+        try:
+            succ = db.get_index_question(int(args[0]))
+
+            if succ is not None:
+                emb = discord.Embed(title='Question for index **{}**'.format(args[0]), type='rich',
+                                    description=succ, color=0xffd700)
+                await bot.send_message(ctx.message.channel, embed=emb)
+            else:
+                await bot.send_message(ctx.message.channel, content="could not find question with supplied index")
+        except ValueError:
+            await bot.send_message(ctx.message.channel, content="Please supply **A NUMBER**")
 
 
 @bot.command(name='list_questions', description='lists all questions from index provided', aliases=['list', 'lq'],

@@ -31,7 +31,8 @@ class DatabaseTest(unittest.TestCase):
     def test_question_retrieval(self):
         if self.Database.Question.select().count() < 1:
             self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
-            self.assertEqual(self.Database.Question.select().count(), 1)
+            self.Database.add_new_question("What is the meaning of life?")
+            self.assertEqual(self.Database.Question.select().count(), 2)
 
         q1 = self.Database.get_day_question()
         q2 = self.Database.get_day_question()
@@ -40,6 +41,13 @@ class DatabaseTest(unittest.TestCase):
         self.assertIsNotNone(q2)
 
         self.assertEqual(q1, q2)
+
+        q3 = self.Database.get_index_question(1)
+        q4 = self.Database.get_index_question(2)
+
+        self.assertIsNotNone(q3)
+        self.assertIsNotNone(q4)
+        self.assertNotEquals(q3, q4)
 
     def test_question_deleting(self):
         self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
