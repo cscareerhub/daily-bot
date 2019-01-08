@@ -129,7 +129,7 @@ class Database:
                     body = body.strftime('%d/%m/%Y')
                 else:
                     body = "Never Asked"
-                    
+
                 string += "{:>3} | {}\n".format(row["id"], body)
 
         return string

@@ -6,16 +6,41 @@ A bot that outputs coding questions on a daily basis.
 
 ## Setup
 ### Docker
-- Base image is `nikmang/daily-bot`. Download this and run it with the following command: `docker run -it nikmang/daily-bot bash`
-- This will land you in the main directory with the python script. After this follow the directions on [here](README.md#installation)
+#### Prerequisites:
+- docker (obviously)
+- docker-compose
+
+#### Installation
+- Clone this repository into folder of choice.
+- Modify [docker-compose.yml](docker-compose.yml) to change the default password and username under `db.environment`.
+_I am not being held liable if stuff goes missing because you chose u:`postgres` p:`postgres` for login._
+- **NOTE:** If you have PostgreSQL installed on your host you will also have to do the following in [docker-compose.yml](docker-compose.yml):
+```
+db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - '5432:5432'
+```
+Should have the port changed to read 5431:5432 (or whatever host port isn't taken as Postgres defaults to 5432) as can be seen below:
+```
+db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - '5431:5432'
+```
+
+- Create a `.env` file in current directory (look below for how the variables should appear, under Normal Script Installation).
+- Run `docker-compose run -d --build` from current directory
 
 ### Normal Script
-####Prerequisites:
+#### Prerequisites:
 - Python 3.4.2+
 - PostgreSQL
 - pip3 (or have pip reference Python 3 installation)
 
-####Installation
+#### Installation
 Note: this should be pretty generic among all Linux, MacOS, and Windows systems.
 
 - Run `service postgresql start` to enable the Postgres server. _**Note:** this step may get removed in the future for dockerfile._
@@ -55,6 +80,9 @@ Reply **YES** to save the question to the database, **NO** (or anything else) to
 ### Showing a Question
 In the given channel (`daily-coding-challenge` by default), enter `>q` or `>show_question` to get the corresponding question.
 This will automatically update on a daily basis.
+
+If you provide a number index after command e.g `>q 4` it will show the question with the xth index (in this case it will be the 4th).
+To find the index of the questions, list through them in ```>lq``` as is explained in Index found by [listing questions](README.md#Listing Questions)..
 
 ### Listing Questions
 ```>lq``` will list the first _10_ questions that were input into the database.
