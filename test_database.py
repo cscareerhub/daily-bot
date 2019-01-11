@@ -15,7 +15,7 @@ class DatabaseTest(unittest.TestCase):
         cols_qs = self.db.get_columns('question')
 
         self.assertTrue(len(cols_ans) == 4)
-        self.assertTrue(len(cols_qs) == 3)
+        self.assertTrue(len(cols_qs) == 6)
 
     def test_adding_questions(self):
         self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
