@@ -190,12 +190,12 @@ def get_embed(base=None):
     global question
 
     if base is None:
-        question_text = "[*{}*] Asked by **{}**\n\n{}".format(question[0], question[2], question[1])
+        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(question[0], question[2], question[1])
 
         if len(question) == 4:
             question_text + "\nLeetcode link: {}".format(question[3])
     else:
-        question_text = "[*{}*] Asked by **{}**\n\n{}".format(base[0], base[2], base[1])
+        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(base[0], base[2], base[1])
 
     return discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
                          description=question_text, color=0xffd700)

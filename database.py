@@ -96,9 +96,9 @@ class Database:
         q.save()
 
         if q.leetcode is not None:
-            return q.index, q.body, q.company, q.leetcode
+            return q.id, q.body, q.company, q.leetcode
         else:
-            return q.index, q.body, q.company
+            return q.id, q.body, q.company
 
     def get_index_question(self, index):
         """
@@ -137,7 +137,7 @@ class Database:
                 if body is not None:
                     body = body.strftime('%d/%m/%Y')
                 else:
-                    body = "Never Asked"
+                    body = "Never"
 
                 string += "{:>3} | {:10} | {}\n".format(row["id"], body, row["company"])
 
