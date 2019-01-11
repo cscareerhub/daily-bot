@@ -83,13 +83,14 @@ async def on_message(message):
     # TODO: add check in DB to see if person is allowed to add
 
     if message.author.id in user_cache.keys():
-        # if message.content.upper() == 'Y' or message.content.upper() == 'YES':
-        #     if db.add_new_question(user_cache[message.author.id]) == 1:
-        #         await bot.send_message(message.author, "Question added.")
-        #     else:
-        #         await bot.send_message(message.author, "Question already in database.")
-        # else:
-        #     await bot.send_message(message.author, "Question **not** added.")
+        if message.content.upper() == 'Y' or message.content.upper() == 'YES':
+            arr = user_cache[message.author.id]
+            if db.add_new_question(arr[1], arr[2], arr[3]) == 1:
+                await bot.send_message(message.author, "Question added.")
+            else:
+                await bot.send_message(message.author, "Question already in database.")
+        else:
+            await bot.send_message(message.author, "Question **not** added.")
 
         del user_cache[message.author.id]
 
@@ -101,12 +102,15 @@ async def on_message(message):
             await bot.send_message(message.author, "Invalid Format. Try Again")
             return
 
-        arr = [1, "\n".join(lines[2:]), lines[0]]
+        # index [0] is just a newline
+        arr = [1, "\n".join(lines[3:]), lines[1]]
 
         emb = get_embed(base=arr)
 
         await bot.send_message(message.author, embed=emb,
                                content="Type in _YES_ to keep it this way. _NO_ to try format again")
+
+        arr.append(lines[2])
         user_cache[message.author.id] = arr
     else:
         await bot.process_commands(message)
@@ -191,7 +195,7 @@ def get_embed(base=None):
         if len(question) == 4:
             question_text + "\nLeetcode link: {}".format(question[3])
     else:
-        question_text = "*[{}]*. Asked by **{}**\n\n{}".format(base[0], base[2], base[1])
+        question_text = "[*{}*] Asked by **{}**\n\n{}".format(base[0], base[2], base[1])
 
     return discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
                          description=question_text, color=0xffd700)
