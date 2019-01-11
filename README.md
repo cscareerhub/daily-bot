@@ -69,7 +69,9 @@ To add a question all you simply have to do is private message the bot the quest
 It should be inside triple backticks e.g)<br>
 ``````
 ```
-Question is in here
+Company that Asked
+Key Data Structure Used
+Actual Question
 ```
 ``````
 The bot will reply with what the person should see after minor editing.
@@ -92,3 +94,7 @@ _NOTE:_ indexing starts at 1, not 0.
 ### Removing a Question
 ```>del <index>``` e.g ```>del 10``` deletes a question with given index. Index found by [listing questions](README.md#Listing Questions).
 If the question is the day's question, a new one will be found.
+
+## Known Caveats
+- When using docker you will need to run `docker-compose up` twice. First time to initialize everything, then `docker-compose down` and `up` again to restart.
+Otherwise the Python script will not have access to the backing database.
