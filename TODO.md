@@ -1,7 +1,7 @@
 # All Tasks
 - SQL backing database:
     - structure: 
-        - *Question*: Index (INT NOT NULL PK), Text Block (TEXT NOT NULL), Last Date Asked (DATE)
+        - *Question*: Index (INT NOT NULL PK), Leetcode (VARCHAR(2083)), Text Block (TEXT NOT NULL), Company (TEXT NOT NULL), Data Structure (TEXT), Last Date Asked (DATE)
         - *Answers*: Index (INT NOT NULL PK), User ID (???), URL to solution (VARCHAR(2083) NOT NULL), Question Index (INT NOT NULL FK to Question)
 
 - Commands:
@@ -26,6 +26,12 @@
         - [x] start psql automatically
         - [x] add psql defaults in base package
         - [x] go straight to `vim .env`
+    - [ ] Change SQL
+        - [x] New Question model
+        - [x] Alter tests
+        - [x] Alter commands
+        - [ ] Add leetcode link command
+    - [ ] Un-screw the saving (the array in on_message is all kinds of messy inside)
     
 # Potential Order
 1. Database Communication
