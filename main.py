@@ -101,7 +101,7 @@ async def on_message(message):
             await bot.send_message(message.author, "Invalid Format. Try Again")
             return
 
-        arr = [1, lines[0], "\n".join(lines[2:])]
+        arr = [1, "\n".join(lines[2:]), lines[0]]
 
         emb = get_embed(base=arr)
 
@@ -182,16 +182,16 @@ async def remove_question(ctx, *args):
         await bot.send_message(ctx.message.channel, content="Please supply **A NUMBER**")
 
 
-async def get_embed(base=None):
+def get_embed(base=None):
     global question
 
     if base is None:
-        question_text = "*[{}]*. Asked by **{}**\n".format(question[0], question[2], question[1])
+        question_text = "[*{}*] Asked by **{}**\n\n{}".format(question[0], question[2], question[1])
 
         if len(question) == 4:
             question_text + "\nLeetcode link: {}".format(question[3])
     else:
-        question_text = "*[{}]*. Asked by **{}**\n".format(base[0], base[2], base[1])
+        question_text = "*[{}]*. Asked by **{}**\n\n{}".format(base[0], base[2], base[1])
 
     return discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
                          description=question_text, color=0xffd700)
