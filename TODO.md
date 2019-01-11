@@ -28,9 +28,10 @@
         - [x] go straight to `vim .env`
     - [ ] Change SQL
         - [x] New Question model
-        - [ ] Alter tests
+        - [x] Alter tests
         - [x] Alter commands
         - [ ] Add leetcode link command
+    - [ ] Un-screw the saving (the array in on_message is all kinds of messy inside)
     
 # Potential Order
 1. Database Communication

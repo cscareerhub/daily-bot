@@ -85,7 +85,7 @@ async def on_message(message):
     if message.author.id in user_cache.keys():
         if message.content.upper() == 'Y' or message.content.upper() == 'YES':
             arr = user_cache[message.author.id]
-            if db.add_new_question(arr[1], arr[2], arr[3]) == 1:
+            if db.add_new_question(arr[2], arr[1], arr[3]) == 1:
                 await bot.send_message(message.author, "Question added.")
             else:
                 await bot.send_message(message.author, "Question already in database.")

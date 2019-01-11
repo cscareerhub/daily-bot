@@ -112,7 +112,7 @@ class Database:
         if target is None:
             return None
 
-        return target.index, target.body, target.company
+        return target.id, target.company, target.body
 
     def list_questions(self, first_index=0):
         """
