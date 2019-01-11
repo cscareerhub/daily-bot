@@ -21,11 +21,11 @@ class DatabaseTest(unittest.TestCase):
         self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
                                        "Tree")
         self.assertEqual(self.Database.Question.select().count(), 1)
-        self.assertEqual(self.Database.Question.select(self.Database.Question.id == 1).body,
+        self.assertEqual(self.Database.Question.get(self.Database.Question.id == 1).body,
                          "How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
-        self.assertEqual(self.Database.Question.select(self.Database.Question.id == 1).company,
+        self.assertEqual(self.Database.Question.get(self.Database.Question.id == 1).company,
                          "Nik")
-        self.assertEqual(self.Database.Question.select(self.Database.Question.id == 1).data_structure,
+        self.assertEqual(self.Database.Question.get(self.Database.Question.id == 1).data_structure,
                          "Tree")
 
         self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
