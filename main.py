@@ -39,14 +39,18 @@ def update_question():
     global question, question_date
     print("Updating Question")
     if question is None or question_date < datetime.today().date():
-        question = db.get_day_question()[1]
+        question = db.get_day_question()
         question_date = datetime.today().date()
 
 
 async def timer_update():
     while True:
         update_question()
-        await run_embed()
+        emb = get_embed()
+
+        if target_channel is not None:
+            await bot.send_message(target_channel, embed=emb)
+
         await asyncio.sleep(secs)
 
 
@@ -79,21 +83,31 @@ async def on_message(message):
     # TODO: add check in DB to see if person is allowed to add
 
     if message.author.id in user_cache.keys():
-        if message.content.upper() == 'Y' or message.content.upper() == 'YES':
-            if db.add_new_question(user_cache[message.author.id]) == 1:
-                await bot.send_message(message.author, "Question added.")
-            else:
-                await bot.send_message(message.author, "Question already in database.")
-        else:
-            await bot.send_message(message.author, "Question **not** added.")
+        # if message.content.upper() == 'Y' or message.content.upper() == 'YES':
+        #     if db.add_new_question(user_cache[message.author.id]) == 1:
+        #         await bot.send_message(message.author, "Question added.")
+        #     else:
+        #         await bot.send_message(message.author, "Question already in database.")
+        # else:
+        #     await bot.send_message(message.author, "Question **not** added.")
 
         del user_cache[message.author.id]
 
     elif message.content.startswith("```") and message.content.endswith("```"):
         body = message.content[3:len(message.content) - 3]
-        await bot.send_message(message.author,
-                               "```{}```\nType in _YES_ to keep it this way. _NO_ to try format again".format(body))
-        user_cache[message.author.id] = body
+        lines = body.splitlines()
+
+        if len(lines) < 3:
+            await bot.send_message(message.author, "Invalid Format. Try Again")
+            return
+
+        arr = [1, lines[0], "\n".join(lines[2:])]
+
+        emb = get_embed(base=arr)
+
+        await bot.send_message(message.author, embed=emb,
+                               content="Type in _YES_ to keep it this way. _NO_ to try format again")
+        user_cache[message.author.id] = arr
     else:
         await bot.process_commands(message)
 
@@ -111,18 +125,17 @@ async def show_question(ctx, *args):
         update_question()
 
         if question is None:
-            question = 'No available questions found... Contact one of channel mods!'
+            emb = get_embed(base=['N/A', 'No available questions found... Contact one of channel mods!', 'N/A'])
+        else:
+            emb = get_embed()
 
-        emb = discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
-                            description=question, color=0xffd700)
         await bot.send_message(ctx.message.channel, embed=emb)
     else:
         try:
             succ = db.get_index_question(int(args[0]))
 
             if succ is not None:
-                emb = discord.Embed(title='Question for index **{}**'.format(args[0]), type='rich',
-                                    description=succ, color=0xffd700)
+                emb = get_embed(base=succ)
                 await bot.send_message(ctx.message.channel, embed=emb)
             else:
                 await bot.send_message(ctx.message.channel, content="could not find question with supplied index")
@@ -169,11 +182,19 @@ async def remove_question(ctx, *args):
         await bot.send_message(ctx.message.channel, content="Please supply **A NUMBER**")
 
 
-async def run_embed():
-    if target_channel is not None:
-        emb = discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
-                            description=question, color=0xffd700)
-        await bot.send_message(target_channel, embed=emb)
+async def get_embed(base=None):
+    global question
+
+    if base is None:
+        question_text = "*[{}]*. Asked by **{}**\n".format(question[0], question[2], question[1])
+
+        if len(question) == 4:
+            question_text + "\nLeetcode link: {}".format(question[3])
+    else:
+        question_text = "*[{}]*. Asked by **{}**\n".format(base[0], base[2], base[1])
+
+    return discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
+                         description=question_text, color=0xffd700)
 
 
 if __name__ == '__main__':

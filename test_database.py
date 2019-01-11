@@ -18,20 +18,24 @@ class DatabaseTest(unittest.TestCase):
         self.assertTrue(len(cols_qs) == 3)
 
     def test_adding_questions(self):
-        self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
+        self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
+                                       "Tree")
         self.assertEqual(self.Database.Question.select().count(), 1)
-        self.Database.add_new_question("What is the meaning of life?")
+        self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
         self.assertEqual(self.Database.Question.select().count(), 2)
-        self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
+        self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
+                                       "Tree")
         self.assertEqual(self.Database.Question.select().count(), 2)
         # Testing this post integrity error
-        self.Database.add_new_question("What is love?")
+        self.Database.add_new_question("Nik", "What is love?", "Tree")
         self.assertEqual(self.Database.Question.select().count(), 3)
 
     def test_question_retrieval(self):
         if self.Database.Question.select().count() < 1:
-            self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
-            self.Database.add_new_question("What is the meaning of life?")
+            self.Database.add_new_question("Nik",
+                                           "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
+                                           "Tree")
+            self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
             self.assertEqual(self.Database.Question.select().count(), 2)
 
         q1 = self.Database.get_day_question()
@@ -50,9 +54,9 @@ class DatabaseTest(unittest.TestCase):
         self.assertNotEquals(q3, q4)
 
     def test_question_deleting(self):
-        self.Database.add_new_question("How much wood could a woodchuck chuck if a woodchuck could chuck wood?")
-        self.Database.add_new_question("What is the meaning of life?")
-        self.Database.add_new_question("What is love?")
+        self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?", "Tree")
+        self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
+        self.Database.add_new_question("Nik", "What is love?", "Tree")
 
         self.Database.remove_question(1)
         self.assertTrue(self.Database.Question.select().count(), 2)

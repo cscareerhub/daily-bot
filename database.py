@@ -19,6 +19,9 @@ class Database:
         class Question(BaseModel):
             body = peewee.TextField(unique=True)
             last_date = peewee.DateField(null=True)
+            company = peewee.TextField()
+            data_structure = peewee.TextField()
+            leetcode = peewee.CharField(max_length=2083, null=True)
 
         class Answer(BaseModel):
             uname = peewee.TextField()  # TODO: probably not the best format to save id
@@ -42,16 +45,18 @@ class Database:
         """
         self.db.close()
 
-    def add_new_question(self, text):
+    def add_new_question(self, company, text, structure):
         """
         Adds a new question to the database.
 
         :param text: The body of the text that will appear.
+        :param company: Company  that asked this question.
+        :param structure: The key data structure used for this question.
 
         :return: amount of rows altered.
         """
         try:
-            q = self.Question(body=text)
+            q = self.Question(body=text, data_structure=structure, company=company)
             return q.save()
         except peewee.IntegrityError:
             self.db.rollback()
@@ -89,21 +94,25 @@ class Database:
         # TODO: also do another is none check and add the furthest date from today. This should cover all bases
         q.last_date = datetime.datetime.now().date()
         q.save()
-        return q.index, q.body
+
+        if q.leetcode is not None:
+            return q.index, q.body, q.company, q.leetcode
+        else:
+            return q.index, q.body, q.company
 
     def get_index_question(self, index):
         """
+        Gets the question based on a provided index.
 
         :param index: Index of question that is to be found (look at list_questions)
-        :return: body of question by that index, or None is nothing found
+        :return: list containing index, body and asking company
         """
         target = self.Question.get_or_none(self.Question.id == index)
 
         if target is None:
             return None
 
-        string = target.body
-        return string
+        return target.index, target.body, target.company
 
     def list_questions(self, first_index=0):
         """
@@ -117,7 +126,7 @@ class Database:
         :return: a string that represents set block of questions
         """
         count = 0
-        string = "{:>3} | {}\n".format("ID", "Last Asked")
+        string = "{:>3} | {:10} | {}\n".format("ID", "Last Asked", "Company")
         for row in self.Question.select().dicts():
             if count >= 10:
                 break
@@ -130,7 +139,7 @@ class Database:
                 else:
                     body = "Never Asked"
 
-                string += "{:>3} | {}\n".format(row["id"], body)
+                string += "{:>3} | {:10} | {}\n".format(row["id"], body, row["company"])
 
         return string
 

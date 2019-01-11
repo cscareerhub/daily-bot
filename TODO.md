@@ -27,9 +27,9 @@
         - [x] add psql defaults in base package
         - [x] go straight to `vim .env`
     - [ ] Change SQL
-        - [ ] New Question model
+        - [x] New Question model
         - [ ] Alter tests
-        - [ ] Alter commands
+        - [x] Alter commands
         - [ ] Add leetcode link command
     
 # Potential Order
