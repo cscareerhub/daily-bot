@@ -140,7 +140,8 @@ class Database:
                     body = "Never"
 
                 string += "{:>3} | {:10} | {}\n".format(row["id"], body, row["company"])
-
+                count += 1
+                
         return string
 
     def remove_question(self, index):
