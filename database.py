@@ -96,9 +96,9 @@ class Database:
         q.save()
 
         if q.leetcode is not None:
-            return q.id, q.body, q.company, q.leetcode
+            return q.id, q.company, q.body, q.leetcode
         else:
-            return q.id, q.body, q.company
+            return q.id, q.company, q.body
 
     def get_index_question(self, index):
         """
@@ -141,7 +141,7 @@ class Database:
 
                 string += "{:>3} | {:10} | {}\n".format(row["id"], body, row["company"])
                 count += 1
-                
+
         return string
 
     def remove_question(self, index):
