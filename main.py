@@ -36,9 +36,8 @@ target_channel = None
 
 
 def is_mod_or_admin(author, channel_is_private=False):
-    perms = author.server_permissions
-
     if not channel_is_private:
+        perms = author.server_permissions
         if perms.manage_roles or perms.administrator:
             return True
 
@@ -97,7 +96,7 @@ async def on_message(message):
     if message.author.id in user_cache.keys():
         if message.content.upper() == 'Y' or message.content.upper() == 'YES':
             arr = user_cache[message.author.id]
-            if db.add_new_question(arr[2], arr[1], arr[3]) == 1:
+            if db.add_new_question(arr[1], arr[2], arr[3]) == 1:
                 await bot.send_message(message.author, "Question added.")
             else:
                 await bot.send_message(message.author, "Question already in database.")
@@ -115,7 +114,7 @@ async def on_message(message):
             return
 
         # index [0] is just a newline
-        arr = [1, "\n".join(lines[3:]), lines[1]]
+        arr = [1, lines[1], "\n".join(lines[3:])]
 
         emb = get_embed(base=arr)
 
@@ -129,7 +128,8 @@ async def on_message(message):
 
 
 # Bot Commands
-@bot.command(name='add_admin', description='add admin to table', aliases=['aa'], brief='add new admin')
+@bot.command(name='add_admin', description='add admin to table', aliases=['aa'], brief='add new admin',
+             pass_context=True)
 async def add_admin(ctx):
     if len(ctx.message.mentions) == 0:
         await bot.send_message(ctx.message.channel, content='Need to supply users to add')
@@ -146,7 +146,8 @@ async def add_admin(ctx):
     await bot.send_message(ctx.message.channel, content='Users added')
 
 
-@bot.command(name='remove_admin', description='remove admin from table', aliases=['del_admin', 'da'], brief='delete admin')
+@bot.command(name='remove_admin', description='remove admin from table', aliases=['del_admin', 'da'],
+             brief='delete admin', pass_context=True)
 async def remove_admin(ctx):
     if len(ctx.message.mentions) == 0:
         await bot.send_message(ctx.message.channel, content='Need to supply users to add')
@@ -240,12 +241,12 @@ def get_embed(base=None):
     global question
 
     if base is None:
-        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(question[0], question[2], question[1])
+        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(question[0], question[1], question[2])
 
         if len(question) == 4:
             question_text + "\nLeetcode link: {}".format(question[3])
     else:
-        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(base[0], base[2], base[1])
+        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(base[0], base[1], base[2])
 
     return discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
                          description=question_text, color=0xffd700)
