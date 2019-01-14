@@ -68,6 +68,16 @@ async def on_ready():
     asyncio.ensure_future(timer_update(), loop=loop)
 
 
+def is_mod_or_admin(author, channel_is_private=False):
+    global db
+    if not channel_is_private:
+        perms = author.server_permissions
+        if perms.manage_roles or perms.administrator:
+            return True
+
+    return db.is_admin(author.id)
+
+
 @bot.event
 async def on_message(message):
     global target_channel
@@ -81,11 +91,13 @@ async def on_message(message):
         return
 
     # TODO: add check in DB to see if person is allowed to add
+    if not is_mod_or_admin(message.author, channel_is_private=True):
+        return
 
     if message.author.id in user_cache.keys():
         if message.content.upper() == 'Y' or message.content.upper() == 'YES':
             arr = user_cache[message.author.id]
-            if db.add_new_question(arr[2], arr[1], arr[3]) == 1:
+            if db.add_new_question(arr[1], arr[2], arr[3]) == 1:
                 await bot.send_message(message.author, "Question added.")
             else:
                 await bot.send_message(message.author, "Question already in database.")
@@ -103,7 +115,7 @@ async def on_message(message):
             return
 
         # index [0] is just a newline
-        arr = [1, "\n".join(lines[3:]), lines[1]]
+        arr = [1, lines[1], "\n".join(lines[3:])]
 
         emb = get_embed(base=arr)
 
@@ -117,6 +129,42 @@ async def on_message(message):
 
 
 # Bot Commands
+@bot.command(name='add_admin', description='add admin to table', aliases=['aa'], brief='add new admin',
+             pass_context=True)
+async def add_admin(ctx):
+    if len(ctx.message.mentions) == 0:
+        await bot.send_message(ctx.message.channel, content='Need to supply users to add')
+        return
+
+    if not is_mod_or_admin(ctx.message.author):
+        await bot.send_message(ctx.message.channel, content='You have insufficient perms to do this')
+        return
+
+    for mentioned in ctx.message.mentions:
+        if db.add_admin(mentioned.id) == 0:
+            await bot.send_message(ctx.message.channel, content='User {} not found'.format(mentioned.name))
+
+    await bot.send_message(ctx.message.channel, content='Users added')
+
+
+@bot.command(name='remove_admin', description='remove admin from table', aliases=['del_admin', 'da'],
+             brief='delete admin', pass_context=True)
+async def remove_admin(ctx):
+    if len(ctx.message.mentions) == 0:
+        await bot.send_message(ctx.message.channel, content='Need to supply users to add')
+        return
+
+    if not is_mod_or_admin(ctx.message.author):
+        await bot.send_message(ctx.message.channel, content='You have insufficient perms to do this')
+        return
+
+    for mentioned in ctx.message.mentions:
+        if db.remove_admin(mentioned.id) is None:
+            await bot.send_message(ctx.message.channel, content='User {} not in table'.format(mentioned.name))
+
+    await bot.send_message(ctx.message.channel, content='Users removed')
+
+
 @bot.command(name='show_question',
              description='shows the question for the day. If a number is provided after, gets a question with that index',
              aliases=['show_q', 'q'], brief='show today\'s question', pass_context=True)
@@ -168,6 +216,10 @@ async def list_questions(ctx, *args):
              aliases=['del', 'remove'],
              brief='delete question on index', pass_context=True)
 async def remove_question(ctx, *args):
+    if not is_mod_or_admin(ctx.message.author):
+        await bot.send_message(ctx.message.channel, content="You have insufficient perms to do this")
+        return
+
     global db, question
     if len(args) == 0:
         await bot.send_message(ctx.message.channel, content="Please supply index to delete")
@@ -190,12 +242,12 @@ def get_embed(base=None):
     global question
 
     if base is None:
-        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(question[0], question[2], question[1])
+        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(question[0], question[1], question[2])
 
         if len(question) == 4:
             question_text + "\nLeetcode link: {}".format(question[3])
     else:
-        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(base[0], base[2], base[1])
+        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(base[0], base[1], base[2])
 
     return discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
                          description=question_text, color=0xffd700)

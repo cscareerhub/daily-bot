@@ -10,11 +10,11 @@ class DatabaseTest(unittest.TestCase):
 
     def test_valid_table(self):
         tables = self.db.get_tables()
-        self.assertEqual(sorted(tables), ['answer', 'question'])
-        cols_ans = self.db.get_columns('answer')
+        self.assertEqual(sorted(tables), ['admin', 'question'])
+        cols_ans = self.db.get_columns('admin')
         cols_qs = self.db.get_columns('question')
 
-        self.assertTrue(len(cols_ans) == 4)
+        self.assertTrue(len(cols_ans) == 2)
         self.assertTrue(len(cols_qs) == 6)
 
     def test_adding_questions(self):
@@ -58,7 +58,7 @@ class DatabaseTest(unittest.TestCase):
 
         self.assertIsNotNone(q3)
         self.assertIsNotNone(q4)
-        self.assertNotEquals(q3, q4)
+        self.assertNotEqual(q3, q4)
 
     def test_question_deleting(self):
         self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?", "Tree")
@@ -70,8 +70,32 @@ class DatabaseTest(unittest.TestCase):
         self.Database.remove_question(4)
         self.assertTrue(self.Database.Question.select().count(), 2)
 
+    def test_adding_admins(self):
+        self.Database.add_admin("12345")
+        self.Database.add_admin("54321")
+        self.Database.add_admin("54321")
+
+        self.assertEqual(self.Database.Admin.select().count(), 2)
+        self.assertEqual(self.Database.Admin.get(self.Database.Admin.id == 1).user_id, "12345")
+
+    def test_admin_check(self):
+        self.Database.add_admin("12345")
+
+        self.assertTrue(self.Database.is_admin("12345"))
+        self.assertFalse(self.Database.is_admin("54321"))
+
+    def test_admin_deleting(self):
+        self.Database.add_admin("12345")
+        self.Database.add_admin("54321")
+
+        self.assertEqual(self.Database.remove_admin("54321"), "54321")
+        self.assertEqual(self.Database.Admin.select().count(), 1)
+
+        self.assertIsNone(self.Database.remove_admin("54321"))
+        self.assertEqual(self.Database.Admin.select().count(), 1)
+
     def tearDown(self):
-        self.db.drop_tables([self.Database.Answer, self.Database.Question], safe=True)
+        self.db.drop_tables([self.Database.Admin, self.Database.Question], safe=True)
         self.db.close()
 
 

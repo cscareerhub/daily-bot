@@ -2,17 +2,16 @@
 - SQL backing database:
     - structure: 
         - *Question*: Index (INT NOT NULL PK), Leetcode (VARCHAR(2083)), Text Block (TEXT NOT NULL), Company (TEXT NOT NULL), Data Structure (TEXT), Last Date Asked (DATE)
-        - *Answers*: Index (INT NOT NULL PK), User ID (???), URL to solution (VARCHAR(2083) NOT NULL), Question Index (INT NOT NULL FK to Question)
+        - *Admin*: Index (INT NOT NULL PK), User ID (VARCHAR(19))
 
 - Commands:
     - [x] *Add Question*: Add question to database
     - [x] *Remove Question*: Remove from database
     - [x] *Force Question*: force bot to push question to channel
-    - [ ] *Add Solution*: add or change solution for user
-    - [ ] *List Solutions*: list solutions for users given a question index
+    - [ ] *Add Admin*: add admin
+    - [ ] *Remove Adming*: removes admin
     - [x] *List Questions*: list questions by index and date
     - [ ] *Re-open Connection*: Re open connection to database server if closes
-    - [ ] *Alter Users*: add users that can communicate with bot
 
 - Other:
     - [x] Timer to know when to run question
@@ -39,7 +38,6 @@
 3. Timer on Questions
 4. Removing Questions from db
 5. Caching 
-6. Save answers in database
 7. Improve SQL querying
 8. **[Really this is just running parallel]** Security checks for users only adding valid inputs per role level.
     
