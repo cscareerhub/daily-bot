@@ -76,7 +76,7 @@ class DatabaseTest(unittest.TestCase):
         self.Database.add_admin("54321")
 
         self.assertEqual(self.Database.Admin.select().count(), 2)
-        self.assertEqual(self.Database.Admin.get(self.Database.Admin.id == 1), "12345")
+        self.assertEqual(self.Database.Admin.get(self.Database.Admin.id == 1).user_id, "12345")
 
     def test_admin_check(self):
         self.Database.add_admin("12345")

@@ -35,10 +35,13 @@ question_date = None
 target_channel = None
 
 
-def is_mod_or_admin(author):
+def is_mod_or_admin(author, channel_is_private=False):
     perms = author.server_permissions
-    if perms.manage_roles or perms.administrator:
-        return True
+
+    if not channel_is_private:
+        if perms.manage_roles or perms.administrator:
+            return True
+
     return db.is_admin(author.id)
 
 
@@ -88,7 +91,7 @@ async def on_message(message):
         return
 
     # TODO: add check in DB to see if person is allowed to add
-    if not is_mod_or_admin(message.author):
+    if not is_mod_or_admin(message.author, channel_is_private=True):
         return
 
     if message.author.id in user_cache.keys():
