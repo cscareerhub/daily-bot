@@ -162,7 +162,7 @@ async def remove_admin(ctx):
         if db.remove_admin(mentioned.id) is None:
             await bot.send_message(ctx.message.channel, content='User {} not in table'.format(mentioned.name))
 
-    await bot.send_message(ctx.message.channel, content='Users remove')
+    await bot.send_message(ctx.message.channel, content='Users removed')
 
 
 @bot.command(name='show_question',

@@ -13,6 +13,7 @@ services:
     volumes:
       - database_data:/var/lib/postgresql/data
   daily-bot:
+    restart: always
     build: .
     depends_on:
       - db
