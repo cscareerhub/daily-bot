@@ -23,20 +23,18 @@ class Database:
             data_structure = peewee.TextField()
             leetcode = peewee.CharField(max_length=2083, null=True)
 
-        class Answer(BaseModel):
-            uname = peewee.TextField()  # TODO: probably not the best format to save id
-            url = peewee.CharField(max_length=2083)
-            question = peewee.ForeignKeyField(Question)
+        class Admin(BaseModel):
+            id = peewee.CharField(max_length=19)
 
         self.Question = Question
-        self.Answer = Answer
+        self.Admin = Admin
 
     def start_connection(self):
         """
         Start connection to database.
         """
         self.db.connect()
-        self.db.create_tables([self.Question, self.Answer])
+        self.db.create_tables([self.Question, self.Admin])
         self.db.commit()
 
     def end_connection(self):
@@ -61,21 +59,6 @@ class Database:
         except peewee.IntegrityError:
             self.db.rollback()
             return 0
-
-    # TODO: cache the people for the day. At the moment this will be messier by constantly checking the DB
-    # TODO: untested
-    def add_new_answer(self, ans_url, q_index, uname):
-        """
-        Add a new answer to a question.
-
-        :param ans_url: URL that references the answer
-        :param q_index: ID (or index) of the question being answered
-        :param uname: The author ID of the person answering
-
-        :return: amount of rows altered
-        """
-        ans = self.Answer.get_or_create(question=q_index, uname=uname, defaults={'url': ans_url})
-        return ans.save()
 
     def get_day_question(self):
         """

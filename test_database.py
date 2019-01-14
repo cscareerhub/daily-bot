@@ -10,11 +10,11 @@ class DatabaseTest(unittest.TestCase):
 
     def test_valid_table(self):
         tables = self.db.get_tables()
-        self.assertEqual(sorted(tables), ['answer', 'question'])
+        self.assertEqual(sorted(tables), ['admin', 'question'])
         cols_ans = self.db.get_columns('answer')
         cols_qs = self.db.get_columns('question')
 
-        self.assertTrue(len(cols_ans) == 4)
+        self.assertTrue(len(cols_ans) == 2)
         self.assertTrue(len(cols_qs) == 6)
 
     def test_adding_questions(self):
@@ -58,7 +58,7 @@ class DatabaseTest(unittest.TestCase):
 
         self.assertIsNotNone(q3)
         self.assertIsNotNone(q4)
-        self.assertNotEquals(q3, q4)
+        self.assertNotEqual(q3, q4)
 
     def test_question_deleting(self):
         self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?", "Tree")
