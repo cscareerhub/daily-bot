@@ -24,7 +24,7 @@ class Database:
             leetcode = peewee.CharField(max_length=2083, null=True)
 
         class Admin(BaseModel):
-            id = peewee.CharField(max_length=19)
+            user_id = peewee.CharField(max_length=19)
 
         self.Question = Question
         self.Admin = Admin
