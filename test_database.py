@@ -11,7 +11,7 @@ class DatabaseTest(unittest.TestCase):
     def test_valid_table(self):
         tables = self.db.get_tables()
         self.assertEqual(sorted(tables), ['admin', 'question'])
-        cols_ans = self.db.get_columns('answer')
+        cols_ans = self.db.get_columns('admin')
         cols_qs = self.db.get_columns('question')
 
         self.assertTrue(len(cols_ans) == 2)
@@ -71,7 +71,7 @@ class DatabaseTest(unittest.TestCase):
         self.assertTrue(self.Database.Question.select().count(), 2)
 
     def tearDown(self):
-        self.db.drop_tables([self.Database.Answer, self.Database.Question], safe=True)
+        self.db.drop_tables([self.Database.Admin, self.Database.Question], safe=True)
         self.db.close()
 
 
