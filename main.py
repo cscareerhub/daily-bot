@@ -35,15 +35,6 @@ question_date = None
 target_channel = None
 
 
-def is_mod_or_admin(author, channel_is_private=False):
-    if not channel_is_private:
-        perms = author.server_permissions
-        if perms.manage_roles or perms.administrator:
-            return True
-
-    return db.is_admin(author.id)
-
-
 def update_question():
     global question, question_date
     print("Updating Question")
@@ -75,6 +66,16 @@ async def on_ready():
     db.start_connection()
     loop = asyncio.get_event_loop()
     asyncio.ensure_future(timer_update(), loop=loop)
+
+
+def is_mod_or_admin(author, channel_is_private=False):
+    global db
+    if not channel_is_private:
+        perms = author.server_permissions
+        if perms.manage_roles or perms.administrator:
+            return True
+
+    return db.is_admin(author.id)
 
 
 @bot.event
