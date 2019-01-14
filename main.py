@@ -35,6 +35,13 @@ question_date = None
 target_channel = None
 
 
+def is_mod_or_admin(author):
+    perms = author.server_permissions
+    if perms.manage_roles or perms.administrator:
+        return True
+    return db.is_admin(author.id)
+
+
 def update_question():
     global question, question_date
     print("Updating Question")
@@ -81,6 +88,8 @@ async def on_message(message):
         return
 
     # TODO: add check in DB to see if person is allowed to add
+    if not is_mod_or_admin(message.author):
+        return
 
     if message.author.id in user_cache.keys():
         if message.content.upper() == 'Y' or message.content.upper() == 'YES':
@@ -117,6 +126,40 @@ async def on_message(message):
 
 
 # Bot Commands
+@bot.command(name='add_admin', description='add admin to table', aliases=['aa'], brief='add new admin')
+async def add_admin(ctx):
+    if len(ctx.message.mentions) == 0:
+        await bot.send_message(ctx.message.channel, content='Need to supply users to add')
+        return
+
+    if not is_mod_or_admin(ctx.message.author):
+        await bot.send_message(ctx.message.channel, content='You have insufficient perms to do this')
+        return
+
+    for mentioned in ctx.message.mentions:
+        if db.add_admin(mentioned.id) == 0:
+            await bot.send_message(ctx.message.channel, content='User {} not found'.format(mentioned.name))
+
+    await bot.send_message(ctx.message.channel, content='Users added')
+
+
+@bot.command(name='remove_admin', description='remove admin from table', aliases=['del_admin', 'da'], brief='delete admin')
+async def remove_admin(ctx):
+    if len(ctx.message.mentions) == 0:
+        await bot.send_message(ctx.message.channel, content='Need to supply users to add')
+        return
+
+    if not is_mod_or_admin(ctx.message.author):
+        await bot.send_message(ctx.message.channel, content='You have insufficient perms to do this')
+        return
+
+    for mentioned in ctx.message.mentions:
+        if db.remove_admin(mentioned.id) is None:
+            await bot.send_message(ctx.message.channel, content='User {} not in table'.format(mentioned.name))
+
+    await bot.send_message(ctx.message.channel, content='Users remove')
+
+
 @bot.command(name='show_question',
              description='shows the question for the day. If a number is provided after, gets a question with that index',
              aliases=['show_q', 'q'], brief='show today\'s question', pass_context=True)
@@ -168,6 +211,10 @@ async def list_questions(ctx, *args):
              aliases=['del', 'remove'],
              brief='delete question on index', pass_context=True)
 async def remove_question(ctx, *args):
+    if not is_mod_or_admin(ctx.message.author):
+        await bot.send_message(ctx.message.channel, content="You have insufficient perms to do this")
+        return
+
     global db, question
     if len(args) == 0:
         await bot.send_message(ctx.message.channel, content="Please supply index to delete")

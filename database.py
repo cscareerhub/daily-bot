@@ -24,7 +24,7 @@ class Database:
             leetcode = peewee.CharField(max_length=2083, null=True)
 
         class Admin(BaseModel):
-            user_id = peewee.CharField(max_length=19)
+            user_id = peewee.CharField(max_length=19, unique=True)
 
         self.Question = Question
         self.Admin = Admin
@@ -39,9 +39,48 @@ class Database:
 
     def end_connection(self):
         """
-        close connection to database.
+        Close connection to database.
         """
         self.db.close()
+
+    def add_admin(self, user_id):
+        """
+        Adds an admin to bot users.
+
+        :param user_id: User ID of admin to be added
+        :return: 1 if successful, 0 if already in table
+        """
+        try:
+            q = self.Admin(user_id=user_id)
+            return q.save()
+        except peewee.IntegrityError:
+            self.db.rollback()
+            return 0
+
+    def remove_admin(self, user_id):
+        """
+        Removes an admin from bot users.
+
+        :param user_id: User ID of admin to be removed
+        :return: ID of user deleted. None if nothing found.
+        """
+        target = self.Admin.get_or_none(self.Admin.user_id == user_id)
+
+        if target is None:
+            return None
+
+        string = target.user_id
+        target.delete_instance()
+        return string
+
+    def is_admin(self, user_id):
+        """
+        Returns true if user_id is in admin table
+
+        :param user_id: User ID of player attempting to do command
+        :return: True if in table, False otherwise
+        """
+        return self.Admin.get_or_none(self.Admin.user_id == user_id) is not None
 
     def add_new_question(self, company, text, structure):
         """
