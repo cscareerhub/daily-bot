@@ -8,16 +8,16 @@
     - [x] *Add Question*: Add question to database
     - [x] *Remove Question*: Remove from database
     - [x] *Force Question*: force bot to push question to channel
-    - [ ] *Add Admin*: add admin
-    - [ ] *Remove Adming*: removes admin
+    - [x] *Add Admin*: add admin
+    - [x] *Remove Adming*: removes admin
     - [x] *List Questions*: list questions by index and date
     - [ ] *Re-open Connection*: Re open connection to database server if closes
 
 - Other:
     - [x] Timer to know when to run question
-    - [ ] Bot backend
+    - [x] Bot backend
         - [x] Target channel
-        - [ ] Communication with right people only
+        - [x] Communication with right people only
     - [x] General SQL integration
     - [ ] Add SQL cache
     - [x] Alter Dockerfile
@@ -30,7 +30,7 @@
         - [x] Alter tests
         - [x] Alter commands
         - [ ] Add leetcode link command
-    - [ ] Un-screw the saving (the array in on_message is all kinds of messy inside)
+    - [x] Un-screw the saving (the array in on_message is all kinds of messy inside)
     
 # Potential Order
 1. Database Communication
