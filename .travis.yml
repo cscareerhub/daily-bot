@@ -25,7 +25,7 @@ install:
 before_script:
   - psql -c "CREATE DATABASE testing_db;" -U postgres
   - psql -c "CREATE USER test WITH PASSWORD 'test';" -U postgres
-script: pytest --cov=test_database.py
+script: pytest --cov=test_database
 after_success:
   - coveralls
 #  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASSWORD"

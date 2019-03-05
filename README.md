@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/CS-Career-Hackers/daily-bot.svg?branch=master)](https://travis-ci.org/CS-Career-Hackers/daily-bot)
 [![Discord Chat](https://img.shields.io/discord/334891772696330241.svg)](https://discord.gg/ndFR4RF)
 [![License](https://img.shields.io/github/license/CS-Career-Hackers/daily-bot.svg)](LICENSE)
+[![Coverage Status](https://coveralls.io/repos/github/CS-Career-Hackers/daily-bot/badge.svg?branch=master)](https://coveralls.io/github/CS-Career-Hackers/daily-bot?branch=master)
 # Daily-Bot
 A bot that outputs coding questions on a daily basis.
 
