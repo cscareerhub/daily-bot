@@ -147,22 +147,16 @@ class Database:
         :param first_index: The first index to start at
         :return: a string that represents set block of questions
         """
-        count = 0
         string = "{:>3} | {:10} | {}\n".format("ID", "Last Asked", "Company")
-        for row in self.Question.select().dicts():
-            if count >= 10:
-                break
+        for row in self.Question.select().where(self.Question.id > first_index).limit(5).dicts():
+            body = row["last_date"]
 
-            if row["id"] >= first_index:
-                body = row["last_date"]
+            if body is not None:
+                body = body.strftime('%d/%m/%Y')
+            else:
+                body = "Never"
 
-                if body is not None:
-                    body = body.strftime('%d/%m/%Y')
-                else:
-                    body = "Never"
-
-                string += "{:>3} | {:10} | {}\n".format(row["id"], body, row["company"])
-                count += 1
+            string += "{:>3} | {:10} | {}\n".format(row["id"], body, row["company"])
 
         return string
 
