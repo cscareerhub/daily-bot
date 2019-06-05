@@ -12,6 +12,7 @@ from discord.ext.commands import Bot
 # This is from rolley
 PREFIX = '>'
 DQ_CHANNEL = 'daily-coding-challenge'
+Q_CHANNEL = 'programming-challenges'
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -170,10 +171,11 @@ async def remove_admin(ctx):
              aliases=['show_q', 'q'], brief='show today\'s question', pass_context=True)
 async def show_question(ctx, *args):
     global question
-    if ctx.message.channel.name != DQ_CHANNEL:
-        return
 
     if len(args) == 0:
+        if ctx.message.channel.name != DQ_CHANNEL:
+            return
+
         update_question()
 
         if question is None:
@@ -183,6 +185,9 @@ async def show_question(ctx, *args):
 
         await bot.send_message(ctx.message.channel, embed=emb)
     else:
+        if ctx.message.channel.name != Q_CHANNEL:
+            return
+
         try:
             succ = db.get_index_question(int(args[0]))
 
