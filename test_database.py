@@ -70,6 +70,18 @@ class DatabaseTest(unittest.TestCase):
         self.Database.remove_question(4)
         self.assertTrue(self.Database.Question.select().count(), 2)
 
+    def test_question_random(self):
+        self.Database.add_new_question("Nik",
+                                       "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
+                                       "Tree")
+        self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
+        self.Database.add_new_question("Nik", "What is love?", "Tree")
+        self.Database.remove_question(2)
+
+        for i in range(100):
+            q = self.Database.get_random_question()
+            assert q is not None
+
     def test_adding_admins(self):
         self.Database.add_admin("12345")
         self.Database.add_admin("54321")

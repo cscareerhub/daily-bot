@@ -200,6 +200,16 @@ async def show_question(ctx, *args):
             await bot.send_message(ctx.message.channel, content="Please supply **A NUMBER**")
 
 
+@bot.command(name='random_question', aliases=['random', 'rq'], brief='get random question from database',
+             description='gets a random question from the database. Questions can repeat', pass_context=True)
+async def random_question(ctx, *args):
+    if ctx.message.channel.name != Q_CHANNEL:
+        return
+
+    emb = get_embed(db.get_random_question())
+    await bot.send_message(ctx.message.channel, embed=emb)
+
+
 @bot.command(name='list_questions', description='lists all questions from index provided', aliases=['list', 'lq'],
              brief='list all questions', pass_context=True)
 async def list_questions(ctx, *args):

@@ -1,6 +1,6 @@
 import peewee
 import datetime
-
+import random
 
 class Database:
     def __init__(self, db_name, uname="test", pwd="test", host="localhost"):
@@ -116,6 +116,24 @@ class Database:
         # TODO: also do another is none check and add the furthest date from today. This should cover all bases
         q.last_date = datetime.datetime.now().date()
         q.save()
+
+        if q.leetcode is not None:
+            return q.id, q.company, q.body, q.leetcode
+        else:
+            return q.id, q.company, q.body
+
+    def get_random_question(self):
+        """
+        Returns a random question from the database.
+        Note: will cause endless loop if database does not contain questions
+
+        :return: randomly chosen question
+        """
+        count = self.Question.select().count()
+        q = None
+
+        while q is None:
+            q = self.Question.get_or_none(self.Question.id == random.randint(1, count))
 
         if q.leetcode is not None:
             return q.id, q.company, q.body, q.leetcode
