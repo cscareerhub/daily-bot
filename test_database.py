@@ -61,7 +61,8 @@ class DatabaseTest(unittest.TestCase):
         self.assertNotEqual(q3, q4)
 
     def test_question_deleting(self):
-        self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?", "Tree")
+        self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
+                                       "Tree")
         self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
         self.Database.add_new_question("Nik", "What is love?", "Tree")
 
@@ -69,6 +70,29 @@ class DatabaseTest(unittest.TestCase):
         self.assertTrue(self.Database.Question.select().count(), 2)
         self.Database.remove_question(4)
         self.assertTrue(self.Database.Question.select().count(), 2)
+
+    def test_company_list(self):
+        self.Database.add_new_question("Nik", "1","Tree")
+        self.Database.add_new_question("Not", "4","Tree")
+        self.Database.add_new_question("Not", "5","Tree")
+        self.Database.add_new_question("Nik", "2", "Tree")
+        self.Database.add_new_question("Nik", "3", "Tree")
+        self.Database.add_new_question("Yes", "7", "Tree")
+        self.Database.add_new_question("Maybe", "8", "Tree")
+
+        companies = self.Database.get_company_list()
+
+        assert len(companies) == 4
+
+        for row in companies:
+            if row.company == 'Nik':
+                assert row.count == 3
+            elif row.company == 'Not':
+                assert row.count == 2
+            elif row.company == 'Yes' or row.company == 'Maybe':
+                assert row.count == 1
+            else:
+                raise AssertionError()
 
     def test_question_random(self):
         self.Database.add_new_question("Nik",

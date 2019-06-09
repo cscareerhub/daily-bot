@@ -218,12 +218,29 @@ async def list_questions(ctx, *args):
         string = db.list_questions()
     else:
         try:
-            string = db.list_questions(first_index=int(args[0]))
+            if len(args) == 1:
+                string = db.list_questions(first_index=int(args[0]))
+            else:
+                string = db.list_questions(first_index=int(args[0]), company=args[1])
         except ValueError:
-            string = db.list_questions()
+            string = db.list_questions(company=args[0])
 
     string = '```' + string + '```'
 
+    await bot.send_message(ctx.message.channel, content=string)
+
+
+@bot.command(name='list_companies', description='lists all companies in database', aliases=['lc'],
+             brief='list all companies', pass_context=True)
+async def list_companies(ctx, *args):
+    # all of this can probably be cached until required by waiting for a write or delete to db
+    string = "{0:10} | {1:3}\n".format("Company", "Question Count")
+    query = db.get_company_list()
+
+    for row in query:
+        string += "{0:10} | {1:3}\n".format(row.company, row.count)
+
+    string = '```' + string + '```'
     await bot.send_message(ctx.message.channel, content=string)
 
 

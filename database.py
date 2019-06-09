@@ -154,7 +154,12 @@ class Database:
 
         return target.id, target.company, target.body
 
-    def list_questions(self, first_index=0):
+    def get_company_list(self):
+        companies = self.Question.select(self.Question.company, peewee.fn.COUNT(self.Question.body).alias('count'))\
+            .group_by(self.Question.company)
+        return companies
+
+    def list_questions(self, first_index=0, company=None):
         """
         Lists questions.
 
@@ -163,10 +168,16 @@ class Database:
         Note: index starts at 1.
 
         :param first_index: The first index to start at
+        :param company: The company which is to be filtered for
         :return: a string that represents set block of questions
         """
         string = "{:>3} | {:10} | {}\n".format("ID", "Last Asked", "Company")
-        for row in self.Question.select().where(self.Question.id > first_index).limit(5).dicts():
+        if company is None:
+            query = self.Question.select().where(self.Question.id > first_index).limit(5).dicts()
+        else:
+            query = self.Question.select().where((self.Question.id > first_index) & (self.Question.company == company))\
+                .dicts()
+        for row in query:
             body = row["last_date"]
 
             if body is not None:
