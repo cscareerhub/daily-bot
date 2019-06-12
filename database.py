@@ -10,6 +10,8 @@ class Database:
             password=pwd,
             host=host
         )
+        # This is for local manual testing
+        # self.db = peewee.SqliteDatabase("testing.db")
 
         # This is taken mostly from the Peewee sample app
         class BaseModel(peewee.Model):
@@ -156,7 +158,7 @@ class Database:
 
     def get_company_list(self):
         companies = self.Question.select(self.Question.company, peewee.fn.COUNT(self.Question.body).alias('count'))\
-            .group_by(self.Question.company)
+            .group_by(self.Question.company).order_by(self.Question.company.desc())
         return companies
 
     def list_questions(self, first_index=0, company=None):
@@ -175,8 +177,8 @@ class Database:
         if company is None:
             query = self.Question.select().where(self.Question.id > first_index).limit(5).dicts()
         else:
-            query = self.Question.select().where((self.Question.id > first_index) & (self.Question.company == company))\
-                .dicts()
+            query = self.Question.select().where((self.Question.id > first_index) & (self.Question.company == company)) \
+                .limit(5).dicts()
         for row in query:
             body = row["last_date"]
 

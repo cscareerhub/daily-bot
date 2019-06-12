@@ -234,7 +234,7 @@ async def list_questions(ctx, *args):
              brief='list all companies', pass_context=True)
 async def list_companies(ctx, *args):
     # all of this can probably be cached until required by waiting for a write or delete to db
-    string = "{0:10} | {1:3}\n".format("Company", "Question Count")
+    string = "{0:15} | {1:3}\n".format("Company", "Question Count")
     query = db.get_company_list()
 
     for row in query:
