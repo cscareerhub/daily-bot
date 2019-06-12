@@ -158,7 +158,7 @@ class Database:
 
     def get_company_list(self):
         companies = self.Question.select(self.Question.company, peewee.fn.COUNT(self.Question.body).alias('count'))\
-            .group_by(self.Question.company).order_by(self.Question.company.desc())
+            .group_by(self.Question.company).order_by(self.Question.company.asc())
         return companies
 
     def list_questions(self, first_index=0, company=None):

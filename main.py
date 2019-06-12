@@ -238,7 +238,7 @@ async def list_companies(ctx, *args):
     query = db.get_company_list()
 
     for row in query:
-        string += "{0:10} | {1:3}\n".format(row.company, row.count)
+        string += "{0:15} | {1:3}\n".format(row.company, row.count)
 
     string = '```' + string + '```'
     await bot.send_message(ctx.message.channel, content=string)
