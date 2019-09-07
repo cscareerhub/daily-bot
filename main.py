@@ -1,4 +1,5 @@
 import os
+import json
 import discord
 import asyncio
 
@@ -7,6 +8,7 @@ from database import Database
 from datetime import datetime
 from dotenv import load_dotenv
 from os.path import join, dirname
+from input_parser import json_parser
 from discord.ext.commands import Bot
 
 # This is from rolley
@@ -95,6 +97,19 @@ async def on_message(message):
     if not is_mod_or_admin(message.author, channel_is_private=True):
         return
 
+    if len(message.attachments) == 1:
+        file_url = message.attachments[0]['url']
+
+        if file_url.endswith(".json"):
+            await bot.send_message(message.author, "Attempting to add bulk question list")
+            question_list = json_parser(file_url)
+            db.add_multiple_questions(question_list)
+            await bot.send_message(message.author, "Added questions in bulk")
+            return
+        else:
+            await bot.send_message("I only support JSON files right now")
+            return
+
     if message.author.id in user_cache.keys():
         if message.content.upper() == 'Y' or message.content.upper() == 'YES':
             arr = user_cache[message.author.id]
@@ -164,6 +179,20 @@ async def remove_admin(ctx):
             await bot.send_message(ctx.message.channel, content='User {} not in table'.format(mentioned.name))
 
     await bot.send_message(ctx.message.channel, content='Users removed')
+
+
+@bot.command(name='sample_json', description='show sample of json for input purposes', aliases=['sj', 'json'],
+             brief='json file sample', pass_context=True)
+async def sample_json_format(ctx):
+    questions = []
+
+    for i in range(3):
+        q = db.get_random_question()
+        questions.append({"title": q[1], "body": q[2], "ds": "N/A"})
+        
+    parsed_to_json = json.dumps(questions)
+
+    await bot.send_message(ctx.message.author, "```"+parsed_to_json+"```")
 
 
 @bot.command(name='show_question',
