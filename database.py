@@ -2,16 +2,18 @@ import peewee
 import datetime
 import random
 
+
 class Database:
     def __init__(self, db_name, uname="test", pwd="test", host="localhost"):
-        self.db = peewee.PostgresqlDatabase(
-            db_name,
-            user=uname,
-            password=pwd,
-            host=host
-        )
+        # self.db = peewee.PostgresqlDatabase(
+        #     db_name,
+        #     user=uname,
+        #     password=pwd,
+        #     host=host
+        # )
+
         # This is for local manual testing
-        # self.db = peewee.SqliteDatabase("testing.db")
+        self.db = peewee.SqliteDatabase("testing.db")
 
         # This is taken mostly from the Peewee sample app
         class BaseModel(peewee.Model):
@@ -101,6 +103,18 @@ class Database:
             self.db.rollback()
             return 0
 
+    def add_multiple_questions(self, questions):
+        """
+
+        :param questions: list of tuple of questions
+        :return: nothing
+        """
+        try:
+            self.Question.insert_many(questions, fields=[self.Question.company, self.Question.data_structure,
+                                                         self.Question.body]).execute()
+        except peewee.IntegrityError:
+            self.db.rollback()
+
     def get_day_question(self):
         """
         Get the question for the day.
@@ -157,7 +171,7 @@ class Database:
         return target.id, target.company, target.body
 
     def get_company_list(self):
-        companies = self.Question.select(self.Question.company, peewee.fn.COUNT(self.Question.body).alias('count'))\
+        companies = self.Question.select(self.Question.company, peewee.fn.COUNT(self.Question.body).alias('count')) \
             .group_by(self.Question.company).order_by(self.Question.company.asc())
         return companies
 
