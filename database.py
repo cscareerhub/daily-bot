@@ -4,16 +4,16 @@ import random
 
 
 class Database:
-    def __init__(self, db_name, uname="test", pwd="test", host="localhost"):
-        self.db = peewee.PostgresqlDatabase(
-            db_name,
-            user=uname,
-            password=pwd,
-            host=host
-        )
-
-        # This is for local manual testing
-        # self.db = peewee.SqliteDatabase("testing.db")
+    def __init__(self, db_name, uname="test", pwd="test", host="localhost", debug=False):
+        if debug:
+            self.db = peewee.SqliteDatabase("testing.db")
+        else:
+            self.db = peewee.PostgresqlDatabase(
+                db_name,
+                user=uname,
+                password=pwd,
+                host=host
+            )
 
         # This is taken mostly from the Peewee sample app
         class BaseModel(peewee.Model):
