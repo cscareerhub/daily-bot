@@ -4,16 +4,16 @@ import random
 
 
 class Database:
-    def __init__(self, db_name, uname="test", pwd="test", host="localhost"):
-        # self.db = peewee.PostgresqlDatabase(
-        #     db_name,
-        #     user=uname,
-        #     password=pwd,
-        #     host=host
-        # )
-
-        # This is for local manual testing
-        self.db = peewee.SqliteDatabase("testing.db")
+    def __init__(self, db_name, uname="test", pwd="test", host="localhost", debug=False):
+        if debug:
+            self.db = peewee.SqliteDatabase("testing.db")
+        else:
+            self.db = peewee.PostgresqlDatabase(
+                db_name,
+                user=uname,
+                password=pwd,
+                host=host
+            )
 
         # This is taken mostly from the Peewee sample app
         class BaseModel(peewee.Model):
@@ -128,6 +128,9 @@ class Database:
 
         if q is None:
             q = self.Question.get_or_none(self.Question.last_date.is_null())
+
+            if q is None:
+                q = self.get_random_question()
 
         # TODO: also do another is none check and add the furthest date from today. This should cover all bases
         q.last_date = datetime.datetime.now().date()

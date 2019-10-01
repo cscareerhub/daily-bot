@@ -4,7 +4,7 @@ from database import Database
 
 class DatabaseTest(unittest.TestCase):
     def setUp(self):
-        self.Database = Database("testing_db")
+        self.Database = Database("testing_db", debug=True)
         self.db = self.Database.db
         self.Database.start_connection()
 
