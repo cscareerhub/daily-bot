@@ -154,10 +154,18 @@ async def on_message(message):
 
 
 def update_question_details(msg, author_id):
-    question = msg.content[3:len(msg.content) - 3]
+    global question
+
+    q = msg.content[3:len(msg.content) - 3]
     index = editor_cache[author_id]
+
     del editor_cache[author_id]
-    return db.modify_question(index, question)
+    result = db.modify_question(index, q)
+
+    if question[0] == index and result:
+        question = db.get_day_question()
+
+    return result
 
 
 # Bot Commands
