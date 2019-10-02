@@ -115,6 +115,25 @@ class Database:
         except peewee.IntegrityError:
             self.db.rollback()
 
+    def modify_question(self, index, body):
+        """
+        Modifies a question body.
+
+        :param index: index of said question
+        :param body: the new body of the question
+        :return: true if question found and updated
+        """
+        try:
+            q = self.Question.get_or_none(self.Question.id == index)
+
+            if q is not None:
+                q.body = body
+                q.save()
+                return True
+            return False
+        except peewee.IntegrityError:
+            self.db.rollback()
+
     def get_day_question(self):
         """
         Get the question for the day.

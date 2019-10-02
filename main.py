@@ -26,7 +26,7 @@ bot = Bot(command_prefix=PREFIX)
 UNAME = os.environ.get('USERNAME')
 PWD = os.environ.get('PASSWORD')
 
-db = Database("dailybot", uname=UNAME, pwd=PWD, host="db")
+db = Database("dailybot", uname=UNAME, pwd=PWD, host="db", debug=True)
 
 # Date difference (note: checks every 12hrs)
 secs = 12 * 60 * 60
@@ -36,6 +36,8 @@ user_cache = {}
 question = None
 question_date = None
 target_channel = None
+
+editor_cache = {}
 
 
 def update_question():
@@ -126,6 +128,13 @@ async def on_message(message):
         body = message.content[3:len(message.content) - 3]
         lines = body.splitlines()
 
+        if message.author.id in editor_cache.keys():
+            if update_question_details(message, message.author.id):
+                await bot.send_message(message.author, content="Question has been updated")
+            else:
+                await bot.send_message(message.author, content="Question could not be updated, try again")
+            return
+
         if len(lines) < 3:
             await bot.send_message(message.author, "Invalid Format. Try Again")
             return
@@ -142,6 +151,13 @@ async def on_message(message):
         user_cache[message.author.id] = arr
     else:
         await bot.process_commands(message)
+
+
+def update_question_details(msg, author_id):
+    question = msg.content[3:len(msg.content) - 3]
+    index = editor_cache[author_id]
+    del editor_cache[author_id]
+    return db.modify_question(index, question)
 
 
 # Bot Commands
@@ -179,6 +195,27 @@ async def remove_admin(ctx):
             await bot.send_message(ctx.message.channel, content='User {} not in table'.format(mentioned.name))
 
     await bot.send_message(ctx.message.channel, content='Users removed')
+
+
+@bot.command(name='edit_question', description='edits a question', aliases=['edit'], brief='update question',
+             pass_context=True)
+async def edit_question(ctx, *args):
+    if not is_mod_or_admin(ctx.message.author):
+        await bot.send_message(ctx.message.channel, content="You have insufficient perms to do this")
+        return
+
+    if len(args) == 0:
+        await bot.send_message(ctx.message.channel, content="You need to specify a number...")
+        return
+
+    try:
+        index = int(args[0])
+        editor_cache[ctx.message.author.id] = index
+        await bot.send_message(ctx.message.channel,
+                               content="Please enter the question body surrounded by triple backticks")
+    except ValueError:
+        await bot.send_message(ctx.message.channel,
+                               content="A number, y'know like 0, or 1, or 1997. This isn't that hard")
 
 
 @bot.command(name='sample_json', description='show sample of json for input purposes', aliases=['sj', 'json'],
