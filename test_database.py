@@ -60,6 +60,14 @@ class DatabaseTest(unittest.TestCase):
         self.assertIsNotNone(q4)
         self.assertNotEqual(q3, q4)
 
+    def test_modify_question(self):
+        self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
+        self.Database.add_new_question("Nik", "What is love?", "Tree")
+
+        self.Database.modify_question(1, "This is a test")
+
+        self.assertEqual("This is a test", self.Database.Question.get_or_none(self.Database.Question.id == 1).body)
+
     def test_question_deleting(self):
         self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
                                        "Tree")
