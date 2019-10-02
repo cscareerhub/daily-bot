@@ -26,7 +26,7 @@ bot = Bot(command_prefix=PREFIX)
 UNAME = os.environ.get('USERNAME')
 PWD = os.environ.get('PASSWORD')
 
-db = Database("dailybot", uname=UNAME, pwd=PWD, host="db", debug=True)
+db = Database("dailybot", uname=UNAME, pwd=PWD, host="db")
 
 # Date difference (note: checks every 12hrs)
 secs = 12 * 60 * 60
