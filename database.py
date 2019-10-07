@@ -160,18 +160,18 @@ class Database:
         else:
             return q.id, q.company, q.body
 
-    def get_random_question(self):
+    def get_random_question(self, company=None):
         """
         Returns a random question from the database.
-        Note: will cause endless loop if database does not contain questions
 
+        :param company: (Optional) Limit random question to one asked by given company 
         :return: randomly chosen question
         """
-        count = self.Question.select().count()
-        q = None
 
-        while q is None:
-            q = self.Question.get_or_none(self.Question.id == random.randint(1, count))
+        if company is None:
+            q = self.Question.select().order_by(peewee.fn.Random()).get()
+        else:
+            q = self.Question.select().where(self.Question.company == company).order_by(peewee.fn.Random()).get()
 
         if q.leetcode is not None:
             return q.id, q.company, q.body, q.leetcode

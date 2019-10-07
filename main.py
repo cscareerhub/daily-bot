@@ -280,7 +280,11 @@ async def random_question(ctx, *args):
     if ctx.message.channel.name != Q_CHANNEL:
         return
 
-    emb = get_embed(db.get_random_question())
+    if len(args) == 0:
+        emb = get_embed(db.get_random_question())
+    else:
+        emb = get_embed(db.get_random_question(company=args[0]))
+
     await bot.send_message(ctx.message.channel, embed=emb)
 
 

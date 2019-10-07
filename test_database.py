@@ -114,6 +114,10 @@ class DatabaseTest(unittest.TestCase):
             q = self.Database.get_random_question()
             assert q is not None
 
+        for i in range(100):
+            q = self.Database.get_random_question("Nik")
+            assert q is not None
+
     def test_adding_admins(self):
         self.Database.add_admin("12345")
         self.Database.add_admin("54321")
