@@ -171,7 +171,7 @@ class Database:
         if company is None:
             q = self.Question.select().order_by(peewee.fn.Random()).get()
         else:
-            q = self.Question.select().where(Question.company == company).order_by(peewee.fn.Random()).get()
+            q = self.Question.select().where(self.Question.company == company).order_by(peewee.fn.Random()).get()
 
         if q.leetcode is not None:
             return q.id, q.company, q.body, q.leetcode
