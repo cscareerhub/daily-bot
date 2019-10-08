@@ -97,23 +97,23 @@ class DatabaseTest(unittest.TestCase):
 
         questions = self.Database.list_questions()
 
-        assert len(questions) == 5
+        self.assertEqual(len(questions), 5)
 
-        assert questions[0].id == 1
-        assert questions[1].id == 2
-        assert questions[2].id == 3
-        assert questions[3].id == 4
-        assert questions[4].id == 5
+        self.assertEqual(questions[0].id, 1)
+        self.assertEqual(questions[1].id, 2)
+        self.assertEqual(questions[2].id, 3)
+        self.assertEqual(questions[3].id, 4)
+        self.assertEqual(questions[4].id, 5)
 
         questions = self.Database.list_questions(company="Even")
 
-        assert len(questions) == 5
+        self.assertEqual(len(questions), 5)
 
-        assert questions[0].id == 2
-        assert questions[1].id == 4
-        assert questions[2].id == 6
-        assert questions[3].id == 8
-        assert questions[4].id == 10
+        self.assertEqual(questions[0].id, 2)
+        self.assertEqual(questions[1].id, 4)
+        self.assertEqual(questions[2].id, 6)
+        self.assertEqual(questions[3].id, 8)
+        self.assertEqual(questions[4].id, 10)
 
     def test_company_list(self):
         self.Database.add_new_question("Nik", "1","Tree")
