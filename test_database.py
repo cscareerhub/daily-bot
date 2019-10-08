@@ -79,6 +79,42 @@ class DatabaseTest(unittest.TestCase):
         self.Database.remove_question(4)
         self.assertTrue(self.Database.Question.select().count(), 2)
 
+    def test_list_questions(self):
+        self.Database.add_new_question("Odd", "Q1", "Tree")
+        self.Database.add_new_question("Even", "Q2", "Tree")
+        self.Database.add_new_question("Odd", "Q3", "Tree")
+        self.Database.add_new_question("Even", "Q4", "Tree")
+        self.Database.add_new_question("Odd", "Q5", "Tree")
+        self.Database.add_new_question("Even", "Q6", "Tree")
+        self.Database.add_new_question("Odd", "Q7", "Tree")
+        self.Database.add_new_question("Even", "Q8", "Tree")
+        self.Database.add_new_question("Odd", "Q9", "Tree")
+        self.Database.add_new_question("Even", "Q10", "Tree")
+        self.Database.add_new_question("Odd", "Q11", "Tree")
+        self.Database.add_new_question("Even", "Q12", "Tree")
+
+        prev_id = 0
+
+        questions = self.Database.list_questions()
+
+        assert len(questions) == 5
+
+        assert questions[0].id == 1
+        assert questions[1].id == 2
+        assert questions[2].id == 3
+        assert questions[3].id == 4
+        assert questions[4].id == 5
+
+        questions = self.Database.list_questions(company="Even")
+
+        assert len(questions) == 5
+
+        assert questions[0].id == 2
+        assert questions[1].id == 4
+        assert questions[2].id == 6
+        assert questions[3].id == 8
+        assert questions[4].id == 10
+
     def test_company_list(self):
         self.Database.add_new_question("Nik", "1","Tree")
         self.Database.add_new_question("Not", "4","Tree")
