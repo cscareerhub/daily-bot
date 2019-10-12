@@ -201,8 +201,8 @@ class Database:
         """
         Lists questions.
 
-        Lists 10 questions sorted by insertion order into database.
-        By providing an integer, you retrieve 10 values starting from that index.
+        Lists 5 questions sorted by insertion order into database.
+        By providing an integer, you retrieve 5 values starting from that index.
         Note: index starts at 1.
 
         :param first_index: The first index to start at
@@ -211,10 +211,10 @@ class Database:
         """
         string = "{:>3} | {:10} | {}\n".format("ID", "Last Asked", "Company")
         if company is None:
-            query = self.Question.select().where(self.Question.id > first_index).limit(5).dicts()
+            query = self.Question.select().where(self.Question.id > first_index).order_by(self.Question.id).limit(5).dicts()
         else:
             query = self.Question.select().where((self.Question.id > first_index) & (self.Question.company == company)) \
-                .limit(5).dicts()
+                .order_by(self.Question.id).limit(5).dicts()
         for row in query:
             body = row["last_date"]
 
