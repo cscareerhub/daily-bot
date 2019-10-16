@@ -37,6 +37,9 @@ class DatabaseTest(unittest.TestCase):
         self.Database.add_new_question("Nik", "What is love?", "Tree")
         self.assertEqual(self.Database.Question.select().count(), 3)
 
+        self.Database.add_multiple_questions([("Nik", "What is the airspeed velocity of an unladen swallow?", "Tree")])
+        self.assertEqaul(self.Database.Question.select().count(), 4)
+
     def test_question_retrieval(self):
         if self.Database.Question.select().count() < 1:
             self.Database.add_new_question("Nik",
@@ -61,6 +64,9 @@ class DatabaseTest(unittest.TestCase):
         self.assertNotEqual(q3, q4)
 
     def test_modify_question(self):
+        self.Database.modify_question(1, "This is a test")
+        self.assertTrue(self.Database.Question.select().count(), 0)
+
         self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
         self.Database.add_new_question("Nik", "What is love?", "Tree")
 
@@ -69,6 +75,10 @@ class DatabaseTest(unittest.TestCase):
         self.assertEqual("This is a test", self.Database.Question.get_or_none(self.Database.Question.id == 1).body)
 
     def test_question_deleting(self):
+        self.Database.remove_question(1)
+        self.assertTrue(self.Database.Question.select().count(), 0)
+
+
         self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
                                        "Tree")
         self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
@@ -80,6 +90,8 @@ class DatabaseTest(unittest.TestCase):
         self.assertTrue(self.Database.Question.select().count(), 2)
 
     def test_company_list(self):
+        self.assertEqual(len(self.Database.get_company_list()), 0)
+
         self.Database.add_new_question("Nik", "1","Tree")
         self.Database.add_new_question("Not", "4","Tree")
         self.Database.add_new_question("Not", "5","Tree")
@@ -102,7 +114,27 @@ class DatabaseTest(unittest.TestCase):
             else:
                 raise AssertionError()
 
+    def test_list_questions(self):
+        self.assertIsNotNone(self.Database.list_questions())
+        self.assertIsNotNone(self.Database.list_questions(first_index=3))
+        self.assertIsNOtNone(self.Database.list_questions(company="Nik"))
+
+        self.Database.add_new_question("Nik", "1","Tree")
+        self.Database.add_new_question("Not", "4","Tree")
+        self.Database.add_new_question("Not", "5","Tree")
+        self.Database.add_new_question("Nik", "2", "Tree")
+        self.Database.add_new_question("Nik", "3", "Tree")
+        self.Database.add_new_question("Yes", "7", "Tree")
+        self.Database.add_new_question("Maybe", "8", "Tree")
+
+        self.assertIsNotNone(self.Database.list_questions())
+        self.assertIsNotNone(self.Database.list_questions(first_index=3))
+        self.assertIsNotNone(self.Database.list_questions(company="Nik"))
+
     def test_question_random(self):
+        self.Database.get_random_question()
+        self.Database.get_random_question(company="Irrelevant")
+
         self.Database.add_new_question("Nik",
                                        "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
                                        "Tree")
