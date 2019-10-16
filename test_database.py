@@ -131,6 +131,9 @@ class DatabaseTest(unittest.TestCase):
         self.assertIsNotNone(self.Database.list_questions(first_index=3))
         self.assertIsNotNone(self.Database.list_questions(company="Nik"))
 
+        self.assertIsNotNone(self.Database.list_questions(company="nik"))
+        self.assertIsNotNone(self.Database.list_questions(company="NIK"))
+
     def test_question_random(self):
         self.Database.get_random_question()
         self.Database.get_random_question(company="Irrelevant")
