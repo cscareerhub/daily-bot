@@ -38,7 +38,7 @@ class DatabaseTest(unittest.TestCase):
         self.assertEqual(self.Database.Question.select().count(), 3)
 
         self.Database.add_multiple_questions([("Nik", "What is the airspeed velocity of an unladen swallow?", "Tree")])
-        self.assertEqaul(self.Database.Question.select().count(), 4)
+        self.assertEqual(self.Database.Question.select().count(), 4)
 
     def test_question_retrieval(self):
         if self.Database.Question.select().count() < 1:
@@ -65,7 +65,7 @@ class DatabaseTest(unittest.TestCase):
 
     def test_modify_question(self):
         self.Database.modify_question(1, "This is a test")
-        self.assertTrue(self.Database.Question.select().count(), 0)
+        self.assertEqual(self.Database.Question.select().count(), 0)
 
         self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
         self.Database.add_new_question("Nik", "What is love?", "Tree")
