@@ -117,7 +117,7 @@ class DatabaseTest(unittest.TestCase):
     def test_list_questions(self):
         self.assertIsNotNone(self.Database.list_questions())
         self.assertIsNotNone(self.Database.list_questions(first_index=3))
-        self.assertIsNOtNone(self.Database.list_questions(company="Nik"))
+        self.assertIsNotNone(self.Database.list_questions(company="Nik"))
 
         self.Database.add_new_question("Nik", "1","Tree")
         self.Database.add_new_question("Not", "4","Tree")
