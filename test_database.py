@@ -1,5 +1,6 @@
 import unittest
 from database import Database
+from freezegun import freeze_time
 
 
 class DatabaseTest(unittest.TestCase):
@@ -7,6 +8,10 @@ class DatabaseTest(unittest.TestCase):
         self.Database = Database("testing_db", debug=True)
         self.db = self.Database.db
         self.Database.start_connection()
+
+    def tearDown(self):
+        self.db.drop_tables([self.Database.Admin, self.Database.Question], safe=True)
+        self.db.close()
 
     def test_valid_table(self):
         tables = self.db.get_tables()
@@ -59,6 +64,21 @@ class DatabaseTest(unittest.TestCase):
         self.assertIsNotNone(q3)
         self.assertIsNotNone(q4)
         self.assertNotEqual(q3, q4)
+
+    def test_question_retrieval_fallback(self):
+        self.Database.add_new_question("Nik", "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
+                                       "Tree")
+
+        with freeze_time("2020-11-04"):
+            q1 = self.Database.get_day_question()
+
+        with freeze_time("2020-11-05"):
+            q2 = self.Database.get_day_question()
+
+        self.assertIsNotNone(q1)
+        self.assertIsNotNone(q2)
+
+        self.assertEqual(q1, q2)
 
     def test_modify_question(self):
         self.Database.add_new_question("Nik", "What is the meaning of life?", "Tree")
@@ -141,10 +161,6 @@ class DatabaseTest(unittest.TestCase):
 
         self.assertIsNone(self.Database.remove_admin("54321"))
         self.assertEqual(self.Database.Admin.select().count(), 1)
-
-    def tearDown(self):
-        self.db.drop_tables([self.Database.Admin, self.Database.Question], safe=True)
-        self.db.close()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,5 @@
 import peewee
 import datetime
-import random
 
 
 class Database:
@@ -149,9 +148,8 @@ class Database:
             q = self.Question.get_or_none(self.Question.last_date.is_null())
 
             if q is None:
-                q = self.get_random_question()
+                q = self.__get_random_helper()
 
-        # TODO: also do another is none check and add the furthest date from today. This should cover all bases
         q.last_date = datetime.datetime.now().date()
         q.save()
 
@@ -167,11 +165,7 @@ class Database:
         :param company: (Optional) Limit random question to one asked by given company 
         :return: randomly chosen question
         """
-
-        if company is None:
-            q = self.Question.select().order_by(peewee.fn.Random()).get()
-        else:
-            q = self.Question.select().where(self.Question.company == company).order_by(peewee.fn.Random()).get()
+        q = self.__get_random_helper(company)
 
         if q.leetcode is not None:
             return q.id, q.company, q.body, q.leetcode
@@ -244,3 +238,11 @@ class Database:
         string = target.body
         target.delete_instance()
         return string
+
+    def __get_random_helper(self, company=None):
+        if company is None:
+            q = self.Question.select().order_by(peewee.fn.Random()).get()
+        else:
+            q = self.Question.select().where(self.Question.company == company).order_by(peewee.fn.Random()).get()
+
+        return q

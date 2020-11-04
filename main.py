@@ -3,7 +3,8 @@ import json
 import discord
 import asyncio
 
-from discord import Game
+from discord import Game, DMChannel
+
 from database import Database
 from datetime import datetime
 from dotenv import load_dotenv
@@ -11,7 +12,6 @@ from os.path import join, dirname
 from input_parser import json_parser
 from discord.ext.commands import Bot
 
-# This is from rolley
 PREFIX = '>'
 DQ_CHANNEL = 'daily-coding-challenge'
 Q_CHANNEL = 'programming-challenges'
@@ -48,22 +48,49 @@ def update_question():
         question_date = datetime.today().date()
 
 
+def get_embed(base=None):
+    global question
+
+    if base is None:
+        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(question[0], question[1], question[2])
+
+        if len(question) == 4:
+            question_text + "\nLeetcode link: {}".format(question[3])
+    else:
+        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(base[0], base[1], base[2])
+
+    return discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
+                         description=question_text, color=0xffd700)
+
+
 async def timer_update():
+    global target_channel
+
     while True:
         update_question()
         emb = get_embed()
 
         if target_channel is not None:
-            await bot.send_message(target_channel, embed=emb)
+            await target_channel.send(embed=emb)
 
         await asyncio.sleep(secs)
+
+
+def is_mod_or_admin(author, channel, channel_is_private=False):
+    global db
+    if not channel_is_private:
+        perms = author.permissions_in(channel)
+        if perms.manage_roles or perms.administrator:
+            return True
+
+    return db.is_admin(author.id)
 
 
 # Bot Events
 @bot.event
 async def on_ready():
     global db
-    await bot.change_presence(game=Game(name="Hackerrank"))
+    await bot.change_presence(activity=Game(name="Hackerrank"))
     print("Logged in as")
     print(bot.user.name)
     print(bot.user.id)
@@ -73,21 +100,11 @@ async def on_ready():
     asyncio.ensure_future(timer_update(), loop=loop)
 
 
-def is_mod_or_admin(author, channel_is_private=False):
-    global db
-    if not channel_is_private:
-        perms = author.server_permissions
-        if perms.manage_roles or perms.administrator:
-            return True
-
-    return db.is_admin(author.id)
-
-
 @bot.event
 async def on_message(message):
     global target_channel
 
-    if not message.channel.is_private or message.author.bot:
+    if not isinstance(message.channel, DMChannel) or message.author.bot:
         # This is a passive check to update the target channel for showing question
         if target_channel is None and message.channel.name == DQ_CHANNEL:
             target_channel = message.channel
@@ -95,32 +112,31 @@ async def on_message(message):
         await bot.process_commands(message)
         return
 
-    # TODO: add check in DB to see if person is allowed to add
-    if not is_mod_or_admin(message.author, channel_is_private=True):
+    if not is_mod_or_admin(message.author, message.channel, channel_is_private=True):
         return
 
     if len(message.attachments) == 1:
         file_url = message.attachments[0]['url']
 
         if file_url.endswith(".json"):
-            await bot.send_message(message.author, "Attempting to add bulk question list")
+            await message.channel.send("Attempting to add bulk question list")
             question_list = json_parser(file_url)
             db.add_multiple_questions(question_list)
-            await bot.send_message(message.author, "Added questions in bulk")
+            await message.channel.send("Added questions in bulk")
             return
         else:
-            await bot.send_message("I only support JSON files right now")
+            await message.channel.send("I only support JSON files right now")
             return
 
     if message.author.id in user_cache.keys():
         if message.content.upper() == 'Y' or message.content.upper() == 'YES':
             arr = user_cache[message.author.id]
             if db.add_new_question(arr[1], arr[2], arr[3]) == 1:
-                await bot.send_message(message.author, "Question added.")
+                await message.channel.send("Question added.")
             else:
-                await bot.send_message(message.author, "Question already in database.")
+                await message.channel.send("Question already in database.")
         else:
-            await bot.send_message(message.author, "Question **not** added.")
+            await message.channel.send("Question **not** added.")
 
         del user_cache[message.author.id]
 
@@ -130,13 +146,13 @@ async def on_message(message):
 
         if message.author.id in editor_cache.keys():
             if update_question_details(message, message.author.id):
-                await bot.send_message(message.author, content="Question has been updated")
+                await message.channel.send(content="Question has been updated")
             else:
-                await bot.send_message(message.author, content="Question could not be updated, try again")
+                await message.channel.send(content="Question could not be updated, try again")
             return
 
         if len(lines) < 3:
-            await bot.send_message(message.author, "Invalid Format. Try Again")
+            await message.channel.send("Invalid Format. Try Again")
             return
 
         # index [0] is just a newline
@@ -144,8 +160,7 @@ async def on_message(message):
 
         emb = get_embed(base=arr)
 
-        await bot.send_message(message.author, embed=emb,
-                               content="Type in _YES_ to keep it this way. _NO_ to try format again")
+        await message.channel.send(embed=emb, content="Type in _YES_ to keep it this way. _NO_ to try format again")
 
         arr.append(lines[2])
         user_cache[message.author.id] = arr
@@ -173,57 +188,55 @@ def update_question_details(msg, author_id):
              pass_context=True)
 async def add_admin(ctx):
     if len(ctx.message.mentions) == 0:
-        await bot.send_message(ctx.message.channel, content='Need to supply users to add')
+        await ctx.message.channel.send('Need to supply users to add')
         return
 
-    if not is_mod_or_admin(ctx.message.author):
-        await bot.send_message(ctx.message.channel, content='You have insufficient perms to do this')
+    if not is_mod_or_admin(ctx.message.author, ctx.message.channel):
+        await ctx.message.channel.send(content='You have insufficient perms to do this')
         return
 
     for mentioned in ctx.message.mentions:
         if db.add_admin(mentioned.id) == 0:
-            await bot.send_message(ctx.message.channel, content='User {} not found'.format(mentioned.name))
+            await ctx.message.channel.send(content='User {} not found'.format(mentioned.name))
 
-    await bot.send_message(ctx.message.channel, content='Users added')
+    await ctx.message.channel.send(content='Users added')
 
 
 @bot.command(name='remove_admin', description='remove admin from table', aliases=['del_admin', 'da'],
              brief='delete admin', pass_context=True)
 async def remove_admin(ctx):
     if len(ctx.message.mentions) == 0:
-        await bot.send_message(ctx.message.channel, content='Need to supply users to add')
+        await ctx.message.channel.send(content='Need to supply users to add')
         return
 
-    if not is_mod_or_admin(ctx.message.author):
-        await bot.send_message(ctx.message.channel, content='You have insufficient perms to do this')
+    if not is_mod_or_admin(ctx.message.author, ctx.message.channel):
+        await ctx.message.channel.send(content='You have insufficient perms to do this')
         return
 
     for mentioned in ctx.message.mentions:
         if db.remove_admin(mentioned.id) is None:
-            await bot.send_message(ctx.message.channel, content='User {} not in table'.format(mentioned.name))
+            await ctx.message.channel.send(content='User {} not in table'.format(mentioned.name))
 
-    await bot.send_message(ctx.message.channel, content='Users removed')
+    await ctx.message.channel.send(content='Users removed')
 
 
 @bot.command(name='edit_question', description='edits a question', aliases=['edit'], brief='update question',
              pass_context=True)
 async def edit_question(ctx, *args):
-    if not is_mod_or_admin(ctx.message.author):
-        await bot.send_message(ctx.message.channel, content="You have insufficient perms to do this")
+    if not is_mod_or_admin(ctx.message.author, ctx.message.channel):
+        await ctx.message.channel.send(content="You have insufficient perms to do this")
         return
 
     if len(args) == 0:
-        await bot.send_message(ctx.message.channel, content="You need to specify a number...")
+        await ctx.message.channel.send(content="You need to specify a number...")
         return
 
     try:
         index = int(args[0])
         editor_cache[ctx.message.author.id] = index
-        await bot.send_message(ctx.message.channel,
-                               content="Please enter the question body surrounded by triple backticks")
+        await ctx.message.channel.send(content="Please enter the question body surrounded by triple backticks")
     except ValueError:
-        await bot.send_message(ctx.message.channel,
-                               content="A number, y'know like 0, or 1, or 1997. This isn't that hard")
+        await ctx.message.channel.send(content="A number, y'know like 0, or 1, or 1997. This isn't that hard")
 
 
 @bot.command(name='sample_json', description='show sample of json for input purposes', aliases=['sj', 'json'],
@@ -237,7 +250,7 @@ async def sample_json_format(ctx):
         
     parsed_to_json = json.dumps(questions)
 
-    await bot.send_message(ctx.message.author, "```"+parsed_to_json+"```")
+    await ctx.message.channel.send("```"+parsed_to_json+"```")
 
 
 @bot.command(name='show_question',
@@ -257,7 +270,7 @@ async def show_question(ctx, *args):
         else:
             emb = get_embed()
 
-        await bot.send_message(ctx.message.channel, embed=emb)
+        await ctx.message.channel.send(embed=emb)
     else:
         if ctx.message.channel.name != Q_CHANNEL:
             return
@@ -267,11 +280,11 @@ async def show_question(ctx, *args):
 
             if succ is not None:
                 emb = get_embed(base=succ)
-                await bot.send_message(ctx.message.channel, embed=emb)
+                await ctx.message.channel.send(embed=emb)
             else:
-                await bot.send_message(ctx.message.channel, content="could not find question with supplied index")
+                await ctx.message.channel.send(content="could not find question with supplied index")
         except ValueError:
-            await bot.send_message(ctx.message.channel, content="Please supply **A NUMBER**")
+            await ctx.message.channel.send(content="Please supply **A NUMBER**")
 
 
 @bot.command(name='random_question', aliases=['random', 'rq'], brief='get random question from database',
@@ -285,7 +298,7 @@ async def random_question(ctx, *args):
     else:
         emb = get_embed(db.get_random_question(company=args[0]))
 
-    await bot.send_message(ctx.message.channel, embed=emb)
+    await ctx.message.channel.send(embed=emb)
 
 
 @bot.command(name='list_questions', description='lists all questions from index provided', aliases=['list', 'lq'],
@@ -305,7 +318,7 @@ async def list_questions(ctx, *args):
 
     string = '```' + string + '```'
 
-    await bot.send_message(ctx.message.channel, content=string)
+    await ctx.message.channel.send(content=string)
 
 
 @bot.command(name='list_companies', description='lists all companies in database', aliases=['lc'],
@@ -319,20 +332,20 @@ async def list_companies(ctx, *args):
         string += "{0:15} | {1:3}\n".format(row.company, row.count)
 
     string = '```' + string + '```'
-    await bot.send_message(ctx.message.channel, content=string)
+    await ctx.message.channel.send(content=string)
 
 
 @bot.command(name='remove_question', description='deletes question based on index, found by using >list',
              aliases=['del', 'remove'],
              brief='delete question on index', pass_context=True)
 async def remove_question(ctx, *args):
-    if not is_mod_or_admin(ctx.message.author):
-        await bot.send_message(ctx.message.channel, content="You have insufficient perms to do this")
+    if not is_mod_or_admin(ctx.message.author, ctx.message.channel):
+        await ctx.message.channel.send(content="You have insufficient perms to do this")
         return
 
     global db, question
     if len(args) == 0:
-        await bot.send_message(ctx.message.channel, content="Please supply index to delete")
+        await ctx.message.channel.send(content="Please supply index to delete")
         return
 
     try:
@@ -341,26 +354,11 @@ async def remove_question(ctx, *args):
         if succ is not None:
             if question == succ:
                 question = None
-            await bot.send_message(ctx.message.channel, content="Successfully deleted")
+            await ctx.message.channel.send( content="Successfully deleted")
         else:
-            await bot.send_message(ctx.message.channel, content="could not find question with supplied index")
+            await ctx.message.channel.send(content="could not find question with supplied index")
     except ValueError:
-        await bot.send_message(ctx.message.channel, content="Please supply **A NUMBER**")
-
-
-def get_embed(base=None):
-    global question
-
-    if base is None:
-        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(question[0], question[1], question[2])
-
-        if len(question) == 4:
-            question_text + "\nLeetcode link: {}".format(question[3])
-    else:
-        question_text = "[ *{}* ] Asked by **{}**\n\n{}".format(base[0], base[1], base[2])
-
-    return discord.Embed(title='Question for **{}**'.format(datetime.today().date()), type='rich',
-                         description=question_text, color=0xffd700)
+        await ctx.message.channel.send(content="Please supply **A NUMBER**")
 
 
 if __name__ == '__main__':
