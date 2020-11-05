@@ -104,7 +104,7 @@ async def on_ready():
 async def on_message(message):
     global target_channel
 
-    if not isinstance(message.channel, DMChannel) or message.author.bot:
+    if not isinstance(message.channel, DMChannel):
         # This is a passive check to update the target channel for showing question
         if target_channel is None and message.channel.name == DQ_CHANNEL:
             target_channel = message.channel
@@ -116,7 +116,7 @@ async def on_message(message):
         return
 
     if len(message.attachments) == 1:
-        file_url = message.attachments[0]['url']
+        file_url = message.attachments[0].url
 
         if file_url.endswith(".json"):
             await message.channel.send("Attempting to add bulk question list")
@@ -272,7 +272,7 @@ async def show_question(ctx, *args):
 
         await ctx.message.channel.send(embed=emb)
     else:
-        if ctx.message.channel.name != Q_CHANNEL:
+        if isinstance(ctx.message.channel, DMChannel) or ctx.message.channel.name != Q_CHANNEL:
             return
 
         try:

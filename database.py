@@ -3,7 +3,7 @@ import datetime
 
 
 class Database:
-    def __init__(self, db_name, uname="test", pwd="test", host="localhost", debug=False):
+    def __init__(self, db_name, uname="test", pwd="test", host="localhost", debug=True):
         if debug:
             self.db = peewee.SqliteDatabase("testing.db")
         else:
