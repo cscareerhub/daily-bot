@@ -1,4 +1,4 @@
-aiohttp==3.7.2
+aiohttp==3.7.4
 async-timeout==2.0.1
 websockets==3.4
 discord.py==1.5.1
